@@ -11,23 +11,21 @@
     <div class="signupCard">
 
         <div class="leftSideSign">
-            <img src="../assets/bkgnLogSign.png" alt="Log-Sign In Background" id="signBackground">
+            <img src="../assets/signupGraphic.png" alt="Sign Up Graphic" id="signupGraphic">
         </div>
-
 
         <div class="rightSideSign">
             <h1> Create an Account </h1>
            
             <form action="/signUpPage.html" method="POST">
-                <section class="firstName">
+                <section class="nameInput">
                     <label for="firstName"> First Name </label> <br>
                     <input type="text" id="firstName" name="firstName" required />
-                </section>
 
-                <section class="lastName">
                     <label for="lastName"> Last Name </label> <br>
                     <input type="text" id="lastName" name="lastName" required />
                 </section>
+
 
                 <section class="email">
                     <label for="email"> Email </label> <br>
@@ -49,7 +47,7 @@
 
             <section class="haveAccount">
                 <p> Already have an account? </p>
-                <button onclick="window.location.href='loginPage.html';"> Login </button>
+                <button onclick="window.location.href='loginPage.html';" id="linkToLogin"> Login </button>
             </section>
         </div>
     </div>
