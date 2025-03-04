@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Page</title>
+    <link rel="stylesheet" href= "../css/signUpPage.css">
+</head>
+<body>
+
+    <div class="signupCard">
+
+        <div class="leftSideSign">
+            <img src="../assets/bkgnLogSign.png" alt="Log-Sign In Background" id="signBackground">
+        </div>
+
+
+        <div class="rightSideSign">
+            <h1> Create an Account </h1>
+           
+            <form action="/signUpPage.html" method="POST">
+                <section class="firstName">
+                    <label for="firstName"> First Name </label> <br>
+                    <input type="text" id="firstName" name="firstName" required />
+                </section>
+
+                <section class="lastName">
+                    <label for="lastName"> Last Name </label> <br>
+                    <input type="text" id="lastName" name="lastName" required />
+                </section>
+
+                <section class="email">
+                    <label for="email"> Email </label> <br>
+                    <input type="text" id="email" name="email" required />
+                </section>
+
+                <section class="passwordSignUp">
+                    <label for="passwordSignUp"> Password </label> <br>
+                    <input type="password" id="passwordSignUp" name="passwordSignUp" minlength="8" required />
+                </section>
+
+                <section class="passwordVerify">
+                    <label for="passwordVerify"> Verify Password </label> <br>
+                    <input type="password" id="passwordVerify" name="passwordVerify" minlength="8" required />
+                </section>
+
+                <button type="submit" id="signUpButton"> Sign up </button>
+            </form>
+
+            <section class="haveAccount">
+                <p> Already have an account? </p>
+                <button onclick="window.location.href='loginPage.html';"> Login </button>
+            </section>
+        </div>
+    </div>
+
+</body>
+</html>
