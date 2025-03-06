@@ -1,0 +1,21 @@
+# from fastapi import FastAPI, Request
+# from fastapi.responses import HTMLResponse
+# from fastapi.templating import Jinja2Templates
+# from fastapi.staticfiles import StaticFiles
+# from pathlib import Path
+
+# # Initialize FastAPI app
+# app = FastAPI()
+
+# # Serve static files
+# app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
+
+# # Set up templates directory
+# templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
+
+# # Route to serve the login page
+# @app.get("/login", response_class=HTMLResponse)
+# async def get_login_page(request: Request):
+#     return templates.TemplateResponse("loginPage.html", {"request": request})
+
+
