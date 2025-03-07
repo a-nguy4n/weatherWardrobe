@@ -64,53 +64,81 @@
 //     }
 // });
 
-document.addEventListener("DOMContentLoaded", () => {
-    fetchDevices();
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//     fetchDevices();
+// });
 
-async function fetchDevices() {
-    const username = "{{ user_data.email }}";  // Passed from Jinja2
-    const response = await fetch(`/api/devices/${username}`);
-    const data = await response.json();
+// async function fetchDevices() {
+//     const username = "{{ user_data.email }}";  // Passed from Jinja2
+//     const response = await fetch(`/api/devices/${username}`);
+//     const data = await response.json();
 
-    const devicesContainer = document.getElementById("devicesContainer");
-    devicesContainer.innerHTML = "";  // Clear existing devices
+//     const devicesContainer = document.getElementById("devicesContainer");
+//     devicesContainer.innerHTML = "";  // Clear existing devices
 
-    if (data.devices) {
-        data.devices.forEach(device => {
-            const deviceDiv = document.createElement("div");
-            deviceDiv.classList.add("devicePlaceholder");
-            deviceDiv.innerHTML = `<p>${device.name}</p>`;
-            devicesContainer.appendChild(deviceDiv);
-        });
-    }
-}
+//     if (data.devices) {
+//         data.devices.forEach(device => {
+//             const deviceDiv = document.createElement("div");
+//             deviceDiv.classList.add("devicePlaceholder");
+//             deviceDiv.innerHTML = `<p>${device.name}</p>`;
+//             devicesContainer.appendChild(deviceDiv);
+//         });
+//     }
+// }
 
-function showAddDeviceModal() {
-    document.getElementById("addDeviceModal").style.display = "block";
-}
+// function showAddDeviceModal() {
+//     document.getElementById("addDeviceModal").style.display = "block";
+// }
 
-function closeAddDeviceModal() {
-    document.getElementById("addDeviceModal").style.display = "none";
-}
+// function closeAddDeviceModal() {
+//     document.getElementById("addDeviceModal").style.display = "none";
+// }
 
-async function addDevice() {
-    const deviceName = document.getElementById("deviceName").value;
-    if (!deviceName) return alert("Enter a device name");
+// async function addDevice() {
+//     const deviceName = document.getElementById("deviceName").value;
+//     if (!deviceName) return alert("Enter a device name");
 
-    const username = "{{ user_data.email }}";
+//     const username = "{{ user_data.email }}";
     
-    const response = await fetch("/api/devices/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, device_name: deviceName })
-    });
+//     const response = await fetch("/api/devices/add", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ username, device_name: deviceName })
+//     });
 
-    if (response.ok) {
-        fetchDevices();  // Refresh list
-        closeAddDeviceModal();
-    } else {
-        alert("Failed to add device");
-    }
+//     if (response.ok) {
+//         fetchDevices();  // Refresh list
+//         closeAddDeviceModal();
+//     } else {
+//         alert("Failed to add device");
+//     }
+// }
+
+// Show the modal when the "Add Device" button is clicked
+
+
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("addDevice");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
 }
 
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}

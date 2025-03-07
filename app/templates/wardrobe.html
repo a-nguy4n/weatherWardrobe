@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Wardrobe</title>
+  <link rel="stylesheet" href="/static/css/wardrobe.css" />
+
+  <!-- <style>
+    @font-face {
+    font-family: "Roboto Mono";
+    src: url("../static/assets/RobotoMono-VariableFont_wght.ttf") format("truetype");
+    font-style: normal;
+  }
+  
+  body{
+    height: 100vh;
+    margin: 0;
+    background: url("../static/assets/wardrobeBackground.png");
+    background-size: cover;
+    overflow-y: auto;
+  }
+  
+  h1{
+    font-family: "Roboto Mono";
+    color: white;
+    margin-left: 15%;
+    margin-top: 3%;
+  }
+  
+  .wardrobeCard {
+    width: 80%;
+    height: 80%;
+    background-color: white;
+    margin: auto;
+  }
+  
+  button{
+    font-family: "Roboto Mono";
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.5% 1%;
+    margin-top: 3%;
+  }
+  
+  .crudButtonBar{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  #filterClothesButton,
+  #updateClothingButton {
+    background: #6596CC;
+  }
+  
+  #addClothingButton {
+    background: #4c914ccd;
+  }
+  
+  #removeClothingButton {
+    background: #c53e3ec7;
+  }
+  
+  #filterClothesButton {
+    margin-right: auto;
+    margin-left: 2%;
+  }
+  
+  #updateClothingButton {
+    margin-right: 2%;
+  }
+  
+  </style> -->
+</head>
+<body>
+  <h1>My Wardrobe</h1>
+
+  <div class="wardrobeCard">
+    <div class="crudButtonBar">
+      <button onclick="filterClothingItem()" id="filterClothesButton">Filter</button>
+      <button onclick="addClothingItem()" id="addClothingButton"> + Add</button>
+      <button onclick="removeClothingItem()" id="removeClothingButton"> - Remove</button>
+      <button onclick="updateClothingItem()" id="updateClothingButton">Update</button>
+    </div>
+  </div>
+
+  <script>
+    function filterClothingItem() {
+      // TODO: Add logic
+      console.log("Clothes Filter");
+    }
+
+    function addClothingItem() {
+      // TODO: Add logic
+      console.log("Clothing Item Added");
+    }
+
+    function removeClothingItem() {
+      // TODO: Add logic
+      console.log("Clothing Item Removed");
+    }
+
+    function updateClothingItem() {
+      // TODO: Add logic
+      console.log("Clothing Item Updated");
+    }
+  </script>
+</body>
+</html>

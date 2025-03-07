@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,41 +21,35 @@
             <h1 id="myDevices"> My Devices</h1>
 
             <div class="devicesList" id="devicesList">
-                <!-- Devices will be dynamically inserted here -->
-                 {% for device in user_data.devices %}
-                 <div class="devicePlaceholder">
-                    <p>{{ device.name }}</p>
-                 </div>
-                 {% endfor %}
+                {% for device in devices %}
+                <div class="deviceCard">
+                    <p><strong>Device ID:</strong> {{ device.id }}</p>
+                    <p><strong>Topic:</strong> {{ device.topic }}</p>
+                    <p><strong>Status:</strong> {{ device.status }}</p>
+                </div>
+                {% endfor %}
             </div>
 
             <div class="buttonsContainer">
-                <button onclick="showAddDeviceModal()" id="addDevice"> + Add Device  </button>
-                <button onclick="removeDevice()" id="removeDevice"> - Remove Device </button>
+                <button id="addDevice"> Add Device  </button>
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        
+                        <form id="deviceForm" method="POST">
+                            <label for="deviceId">Device ID:</label>
+                            <input type="text" id="deviceId" name="deviceId" placeholder="Enter device name" required/>
+
+                            <label for="deviceTopic">Device Topic:</label>
+                            <input type="text" id="deviceTopic" name="deviceTopic" placeholder="Enter device topic" required />
+
+                            <button type="submit">Add Device</button>
+                        </form>
+                    </div>
+                </div>
+                <button onclick="removeDevice()" id="removeDevice"> Remove Device </button>
             </div>
-    
-        </div>
-    </div>
 
-    <div id="deviceModal" class="modal">
-        <div class="modal-conent">
-            <span class="close" onclick="closeAddDeviceModal()">&times;</span>
-            <h2>Register New Deivce</h2>
-            <form id="deviceForm">
-                <label for="deviceId">Device ID:</label>
-                <input type="text" id="deviceId" required>
-
-                <label for="deviceTopic">Topic (Name):</label>
-                <input type="text" id="deviceTopic" required>
-
-                <label for="deviceStatus">Status:</label>
-                <select id="deviceStatus">
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-
-                <button type="submit">Register</button>
-            </form>
         </div>
     </div>
 

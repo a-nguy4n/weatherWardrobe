@@ -1,0 +1,65 @@
+@font-face {
+    font-family: "Roboto Mono";
+    src: url(/static/assets/RobotoMono-VariableFont_wght.ttf) format("truetype");
+    font-style: normal;
+  }
+  
+  body{
+    height: 100vh;
+    margin: 0;
+    background: url(/static/assets/wardrobeBackground.png);
+    background-size: cover;
+    overflow-y: auto;
+  }
+  
+  h1{
+    font-family: "Roboto Mono";
+    color: white;
+    margin-left: 15%;
+    margin-top: 3%;
+  }
+  
+  .wardrobeCard {
+    width: 80%;
+    height: 80%;
+    background-color: white;
+    margin: auto;
+  }
+  
+  button{
+    font-family: "Roboto Mono";
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.5% 1%;
+    margin-top: 3%;
+  }
+  
+  .crudButtonBar{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  #filterClothesButton,
+  #updateClothingButton {
+    background: #6596CC;
+  }
+  
+  #addClothingButton {
+    background: #4c914ccd;
+  }
+  
+  #removeClothingButton {
+    background: #c53e3ec7;
+  }
+  
+  #filterClothesButton {
+    margin-right: auto;
+    margin-left: 2%;
+  }
+  
+  #updateClothingButton {
+    margin-right: 2%;
+  }
+  

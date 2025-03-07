@@ -17,7 +17,10 @@ from database import (
     delete_session,
     get_all_users,
     get_user_devices,
-    add_user_device
+    add_user_device,
+    delete_user_device,
+    get_device,
+    get_id_by_user
 )
 
 
@@ -34,7 +37,8 @@ async def lifespan(app: FastAPI):
     """
     # Startup: Setup resources
     try:
-        await setup_database(INIT_USERS)  # Make sure setup_database is async
+        # await setup_database(INIT_USERS)  # Make sure setup_database is async
+        await setup_database()  # Make sure setup_database is async
         print("Database setup completed")
         yield
     finally:
@@ -58,13 +62,15 @@ def get_error_html(username: str) -> str:
     error_html = read_html("./templates/error.html")
     return error_html.replace("{username}", username)
 
-
+####### LANDING PAGE ########
 @app.get("/")
-async def root():
-    """Redirect users to /login"""
+async def root(request: Request):
+    """route users to /landing"""
     # TODO: 2. Implement this route
-    return RedirectResponse(url="/login")
+    return templates.TemplateResponse("/landing.html", {"request": request})
 
+
+###### LOGIN #######
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -103,6 +109,7 @@ async def login(request: Request):
     response.set_cookie(key="sessionId", value=sessionId)
     return response
 
+##### LOGOUT #######
 
 @app.post("/logout")
 async def logout():
@@ -114,6 +121,8 @@ async def logout():
     # TODO: 10. Return response
     return redirect
 
+
+####### SIGNUP #######
 
 @app.get("/signup")
 async def signup_page(request: Request):
@@ -129,12 +138,16 @@ async def signup(request: Request, firstName: str=Form(...), lastName: str=Form(
     await create_user(firstName, lastName, email, passwordVerify)
 
     new_user_id = await get_user_by_username(email)
+    print(new_user_id)
     sessionId = str(uuid.uuid4())
     await create_session(new_user_id["id"], sessionId)
 
     response = RedirectResponse(url=f"/user/{email}", status_code=303)
     response.set_cookie(key="sessionId", value=sessionId)
     return response
+
+
+#### TESTING to SEE USERS TABLE ######
 
 @app.get("/all-users")
 async def all_users():
@@ -143,6 +156,8 @@ async def all_users():
         return {"message": "Could not retrieve users"}
     
     return {"users": users}
+
+###### ROUTE TO USER PAGE AFTER SUCCESSFUL LOGIN ######
 
 @app.get("/user/{username}", response_class=HTMLResponse)
 async def user_page(username: str, request: Request):
@@ -165,6 +180,8 @@ async def user_page(username: str, request: Request):
         return HTMLResponse(content=profile.replace("{username}", username))
     
 
+###### PROFILE TO ADD/DELETE DEVICES #########
+
 @app.get("/profile/{username}", response_class=HTMLResponse)
 async def profile(username: str, request: Request):
 
@@ -178,51 +195,41 @@ async def profile(username: str, request: Request):
     getUser = await get_user_by_id(session["user_id"])
     if getUser is None or getUser["email"] != username:
         return HTMLResponse(content=get_error_html(username), status_code=403)
-    
-    user_devices = await get_user_devices(getUser["id"])
     # print(getUser)
     user_data = {"firstName": getUser["firstName"], 
                  "lastName": getUser["lastName"], 
-                 "email": getUser["email"],
-                 "devices": user_devices}
-    return templates.TemplateResponse("/profile.html", {"request": request, "user_data": user_data})
+                 "email": getUser["email"]}
+    
+    devices = await get_user_devices(session["user_id"])
 
-@app.get("/api/devices/{username}")
-async def get_devices(username: str, request: Request):
+    return templates.TemplateResponse("/profile.html", {"request": request, "user_data": user_data, "devices": devices})
+
+@app.post("/profile/{username}", response_class=HTMLResponse)
+async def add_device(request: Request, username: str, deviceId: str=Form(...), deviceTopic: str=Form(...)):
+    user_id = await get_id_by_user(username)
+    existing_device = await get_device(deviceId, user_id["id"])
+
+    if existing_device:
+        return HTMLResponse("<p>Device already exists. Try again.</p>", status_code=400)
+    
+    await add_user_device(deviceId, user_id["id"], deviceTopic, "active")
+    return RedirectResponse(url=f"/profile/{username}", status_code=303)
+    
+
+@app.get("/wardrobe/{username}", response_class=HTMLResponse)
+async def wardrobe(username: str, request: Request):
     sessionId = request.cookies.get("sessionId")
+
     session = await get_session(sessionId)
 
     if not session:
-        return JSONResponse({"error": "Unauthorized"}, status_code=401)
+        return RedirectResponse("/login")
     
     getUser = await get_user_by_id(session["user_id"])
     if getUser is None or getUser["email"] != username:
-        return JSONResponse({"error": "Forbidden"}, status_code=403)
+        return HTMLResponse(content=get_error_html(username), status_code=403)
     
-    devices = await get_user_devices(getUser["id"])
-    return {"devices": devices}
-
-@app.post("/api/devices/add")
-async def add_device(request: Request):
-    """API to add a new device for the logged-in user."""
-    data = await request.json()
-    username = data.get("username")
-    device_name = data.get("device_name")
-
-    sessionId = request.cookies.get("sessionId")
-    session = await get_session(sessionId)
-
-    if not session:
-        return JSONResponse({"error": "Unauthorized"}, status_code=401)
-
-    getUser = await get_user_by_id(session["user_id"])
-    if getUser is None or getUser["email"] != username:
-        return JSONResponse({"error": "Forbidden"}, status_code=403)
-
-    await add_user_device(getUser["id"], device_name)  # Function to insert into DB
-    return JSONResponse({"message": "Device added successfully"})
-
-
+    return templates.TemplateResponse("/wardrobe.html", {"request": request})
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="localhost", port=8000, reload=True)

@@ -32,6 +32,9 @@
         <button class="logout-button" type="submit">Logout</button>
       </form>
     </div>
+    <div id="profile-link-container">
+      <a id="user-profile-link" href="#">Go to Profile</a>
+    </div>
   </body>
   <script>
     window.onload = function () {
@@ -42,7 +45,10 @@
       // Update the welcome message
       document.getElementById(
         'welcome-message'
-      ).textContent = `Welcome, ${username}!`;
+      ).textContent = `Welcome, {username}!`;
+      const profileLink = document.getElementById('user-profile-link');
+      profileLink.href = `/profile/{username}`;
+      profileLink.textContent = `Go to {username}'s Profile`;
     };
   </script>
 </html>
