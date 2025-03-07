@@ -1,6 +1,6 @@
 import uvicorn
-from fastapi import FastAPI, Request, Response, HTTPException, status
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import FastAPI, Request, Response, HTTPException, status, Form
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import uuid
@@ -11,9 +11,13 @@ from database import (
     setup_database,
     get_user_by_username,
     get_user_by_id,
+    create_user,
     create_session,
     get_session,
     delete_session,
+    get_all_users,
+    get_user_devices,
+    add_user_device
 )
 
 
@@ -71,7 +75,7 @@ async def login_page(request: Request):
     sessionId = await get_session(request.cookies.get("sessionId"))
     if sessionId:
         user = await get_user_by_id(sessionId["user_id"])
-        username = user["usernameLog"]
+        username = user["email"]
         return RedirectResponse(url=f"/user/{username}")
     # return HTMLResponse(content=read_html("./templates/loginPage.html"))
     return templates.TemplateResponse("/loginPage.html", {"request": request})
@@ -82,7 +86,7 @@ async def login(request: Request):
     """Validate credentials and create a new session if valid"""
     # TODO: 4. Get username and password from form data
     username = (await request.form()).get("usernameLog")
-    print(username)
+    #print(username)
     password = (await request.form()).get("passwordLog")
     # TODO: 5. Check if username exists and password matches
     checkUser = await get_user_by_username(username)
@@ -111,10 +115,34 @@ async def logout():
     return redirect
 
 
-@app.get("/signup", response_class=HTMLResponse)
+@app.get("/signup")
 async def signup_page(request: Request):
+    return templates.TemplateResponse("/signUpPage.html", {"request": request})
+
+@app.post("/signup")
+async def signup(request: Request, firstName: str=Form(...), lastName: str=Form(...),
+                 email: str=Form(...), passwordVerify: str=Form(...)):
+    existing_user = await get_user_by_username(email)
+    if existing_user:
+        return HTMLResponse("<p>User already exists. Try again.</p>", status_code=400)
     
-    return HTMLResponse(content=read_html("./templates/signUpPage.html"))
+    await create_user(firstName, lastName, email, passwordVerify)
+
+    new_user_id = await get_user_by_username(email)
+    sessionId = str(uuid.uuid4())
+    await create_session(new_user_id["id"], sessionId)
+
+    response = RedirectResponse(url=f"/user/{email}", status_code=303)
+    response.set_cookie(key="sessionId", value=sessionId)
+    return response
+
+@app.get("/all-users")
+async def all_users():
+    users = await get_all_users()
+    if users is None:
+        return {"message": "Could not retrieve users"}
+    
+    return {"users": users}
 
 @app.get("/user/{username}", response_class=HTMLResponse)
 async def user_page(username: str, request: Request):
@@ -129,12 +157,71 @@ async def user_page(username: str, request: Request):
     # TODO: 13. Check if session username matches URL username
     #   - if not, return error page using get_error_html with 403 status
     getUser = await get_user_by_id(session["user_id"])
-    if getUser is None or getUser["username"] != username:
+    if getUser is None or getUser["email"] != username:
         return HTMLResponse(content=get_error_html(username), status_code=403)
     # TODO: 14. If all valid, show profile page
     else:
         profile = read_html("./templates/dashboard.html")
         return HTMLResponse(content=profile.replace("{username}", username))
+    
+
+@app.get("/profile/{username}", response_class=HTMLResponse)
+async def profile(username: str, request: Request):
+
+    sessionId = request.cookies.get("sessionId")
+
+    session = await get_session(sessionId)
+
+    if not session:
+        return RedirectResponse("/login")
+    
+    getUser = await get_user_by_id(session["user_id"])
+    if getUser is None or getUser["email"] != username:
+        return HTMLResponse(content=get_error_html(username), status_code=403)
+    
+    user_devices = await get_user_devices(getUser["id"])
+    # print(getUser)
+    user_data = {"firstName": getUser["firstName"], 
+                 "lastName": getUser["lastName"], 
+                 "email": getUser["email"],
+                 "devices": user_devices}
+    return templates.TemplateResponse("/profile.html", {"request": request, "user_data": user_data})
+
+@app.get("/api/devices/{username}")
+async def get_devices(username: str, request: Request):
+    sessionId = request.cookies.get("sessionId")
+    session = await get_session(sessionId)
+
+    if not session:
+        return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    
+    getUser = await get_user_by_id(session["user_id"])
+    if getUser is None or getUser["email"] != username:
+        return JSONResponse({"error": "Forbidden"}, status_code=403)
+    
+    devices = await get_user_devices(getUser["id"])
+    return {"devices": devices}
+
+@app.post("/api/devices/add")
+async def add_device(request: Request):
+    """API to add a new device for the logged-in user."""
+    data = await request.json()
+    username = data.get("username")
+    device_name = data.get("device_name")
+
+    sessionId = request.cookies.get("sessionId")
+    session = await get_session(sessionId)
+
+    if not session:
+        return JSONResponse({"error": "Unauthorized"}, status_code=401)
+
+    getUser = await get_user_by_id(session["user_id"])
+    if getUser is None or getUser["email"] != username:
+        return JSONResponse({"error": "Forbidden"}, status_code=403)
+
+    await add_user_device(getUser["id"], device_name)  # Function to insert into DB
+    return JSONResponse({"message": "Device added successfully"})
+
 
 
 if __name__ == "__main__":

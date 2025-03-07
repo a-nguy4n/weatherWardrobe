@@ -1,0 +1,105 @@
+@font-face{
+    font-family: "Roboto Mono";
+    src: url(/static/assets/RobotoMono-VariableFont_wght.ttf) format(truetype);
+    font-style: normal;
+}
+
+body{
+    height: 100vh;
+    margin: 0; 
+    overflow: hidden;
+}
+
+.profilePageContainer{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}
+
+.profilePageContainer .profileInfoSide{
+    width: 35%; 
+    background-color: #75A3D6;
+}
+
+.profilePageContainer .deviceManagementSide{
+    width: 60%;
+    background-color: white;
+}
+
+.profileInfoSide{
+    display: flex;             
+    flex-direction: column;    
+    justify-content: center;    
+    align-items: center;        
+    text-align: center;       
+    height: 100%;   
+}
+
+.deviceManagementSide{
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    background-color: white;
+    padding: 2rem;
+    position: relative; 
+}
+
+#profileImg{
+    width: 35%;
+    margin-bottom: 10%;
+}
+
+p{
+    font-family: "Roboto Mono";
+    color: white;
+}
+
+h1{
+    font-family: "Roboto Mono";
+    color: #75A3D6;
+    margin-left: 5%;
+    margin-top: 10%;
+}
+
+.devicesList{
+     flex: 1;
+     overflow-y: auto; 
+     margin-top: 3%;
+     margin-bottom: 5%;   
+}
+
+.devicePlaceholder{
+    width: 80%;
+    height: 8%;
+    background-color: #E3EFFC;
+    border-radius: 0.5rem;
+    margin-left: 10%;
+    margin-bottom: 3%;
+}
+
+.buttonsContainer{
+    display: flex;
+    justify-content: flex-end; 
+    gap: 1rem;
+}
+
+#addDevice{
+    font-family: "Roboto Mono";
+    background: #4c914ccd;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 1% 1%; 
+    margin-right: 2%;
+
+}
+
+#removeDevice{
+    font-family: "Roboto Mono";
+    background: #c53e3ec7;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 1% 1%;
+    margin-left: 2%;
+}

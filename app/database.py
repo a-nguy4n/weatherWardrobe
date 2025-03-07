@@ -78,7 +78,9 @@ async def setup_database(initial_users: dict = None):
         "users": """
             CREATE TABLE users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                username VARCHAR(255) NOT NULL UNIQUE,
+                email VARCHAR(255) NOT NULL UNIQUE,
+                firstName VARCHAR(100),
+                lastName VARCHAR(100),
                 password VARCHAR(255) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
@@ -87,10 +89,21 @@ async def setup_database(initial_users: dict = None):
             CREATE TABLE sessions (
                 id VARCHAR(36) PRIMARY KEY,
                 user_id INT NOT NULL,
+                device_id INT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             )
         """,
+        "devices": """
+            CREATE TABLE devices (
+                id VARCHAR(36) PRIMARY KEY,
+                user_id INT NOT NULL,
+                topic VARCHAR(50),
+                status VARCHAR(50),
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        """,
+
     }
 
     try:
@@ -99,7 +112,7 @@ async def setup_database(initial_users: dict = None):
         cursor = connection.cursor()
 
         # Drop and recreate tables one by one
-        for table_name in ["sessions", "users"]:
+        for table_name in ["devices", "sessions", "users"]:
             # Drop table if exists
             logger.info(f"Dropping table {table_name} if exists...")
             cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
@@ -122,7 +135,7 @@ async def setup_database(initial_users: dict = None):
         # Insert initial users if provided
         if initial_users:
             try:
-                insert_query = "INSERT INTO users (username, password) VALUES (%s, %s)"
+                insert_query = "INSERT INTO users (email, password) VALUES (%s, %s)"
                 for username, password in initial_users.items():
                     cursor.execute(insert_query, (username, password))
                 connection.commit()
@@ -151,8 +164,26 @@ async def get_user_by_username(username: str) -> Optional[dict]:
     try:
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+        cursor.execute("SELECT * FROM users WHERE email = %s", (username,))
         return cursor.fetchone()
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+async def get_all_users():
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM users")
+        users = cursor.fetchall()
+
+        return users
     finally:
         if cursor:
             cursor.close()
@@ -183,6 +214,24 @@ async def get_user_by_id(user_id: int) -> Optional[dict]:
         if connection and connection.is_connected():
             connection.close()
 
+
+async def create_user(firstName: str, lastName: str, email: str, password: str):
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            "INSERT INTO users (email, firstName, lastName, password) VALUES (%s, %s, %s, %s)", (email, firstName, lastName, password) 
+        )
+        connection.commit()
+        return True
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
 
 async def create_session(user_id: int, session_id: str) -> bool:
     """Create a new session in the database."""
@@ -234,6 +283,42 @@ async def delete_session(session_id: str) -> bool:
         connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute("DELETE FROM sessions WHERE id = %s", (session_id,))
+        connection.commit()
+        return True
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+async def get_user_devices(user_id: int):
+    """Fetch all devices for a specific user from the database."""
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("SELECT id, topic, status FROM devices WHERE user_id = %s", (user_id,))
+        return cursor.fetchall()
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+async def add_user_device(user_id, device_name):
+    """Insert a new device into the database."""
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            "INSERT INTO devices (user_id, topic, status) VALUES (%s, %s, %s)",
+            (user_id, topic, status)
+        )
         connection.commit()
         return True
     finally:

@@ -4,126 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up Page</title>
-    <!-- <link rel="stylesheet" href= "../static/css/signUpPage.css"> -->
+    <link rel="stylesheet" href= "/static/css/signUpPage.css">
 
-
-    <style>
-        @font-face{
-            font-family: "Roboto Mono";
-            src: url(/static/assets/RobotoMono-VariableFont_wght.ttf) format(truetype);
-            font-style: normal;
-        }
-
-        body{
-            height: 100vh;
-            margin: 0; 
-            overflow-x: hidden;
-            overflow-y: hidden;
-            background: url(/static/assets/logSignUpBackground.png);
-            background-size: cover;
-        }
-
-        .signupCard{
-            width: 77vw;
-            height: 70vh;
-            display: flex;
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            margin: auto;
-            margin-top: 10%;
-        }
-
-        .signupCard .leftSideSign{
-            width: 60%; 
-            background-color: #75A3D6;
-        }   
-
-        .signupCard .rightSideSign{
-            width: 40%;
-            background-color: white;
-        }
-
-        .leftSideSign{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #signupGraphic{
-            width: 31vw;
-            height: 45vh;
-        }
-
-        .rightSideSign{
-            display: grid;
-            padding-right: 3%;
-            padding-left: 3%;
-            font-family: "Roboto Mono";
-            color: #3A6BA1;
-        }
-
-        h1{
-            font-size: 1.8rem;
-            padding-top: 10%;
-        }
-
-        input[type=text],
-        input[type=password]{
-            width: 80%;
-            padding: 2% 8.5%;
-            margin-top: 3%;
-            border: none;
-            background-color: #75a2d636 ;
-        }
-
-        .firstName input[type=text],
-        .lastName input[type=text]{
-            padding: 3% 8%;
-        }
-
-        label{
-            font-size: 1vw;;
-        }
-
-        form{
-            display: grid;
-        }
-       
-        .nameGroup{
-            display: flex;         
-            gap: 2rem;           
-        }
-
-        #signUpButton{
-            font-family: "Roboto Mono";
-            color: white; 
-            font-size: 0.85vw;
-            background: #6596CC;
-            border-radius: 13px;
-            border: none;
-            padding: 1% 3%; 
-            margin-top: 2%;
-            justify-self: end;
-            transform: translateY(0%);
-        }
-
-        p{
-            font-size: 1.2vw;
-        }
-
-        #linkToLogin{
-            font-family: "Roboto Mono";
-            color: white; 
-            font-size: 1vw;
-            background: #6596CC;
-            border-radius: 15px;
-            border: none;
-            padding: 1% 5%; 
-            transform: translateY(-50%)
-        }
-
-    </style>
 </head>
 <body>
 
@@ -136,7 +18,7 @@
         <div class="rightSideSign">
             <h1> Create an Account </h1>
            
-            <form action="/app/templates/signUpPage.html" id="signUpForm" method="POST">
+            <form action="/signup" id="signUpForm" method="POST">
                 <div class="nameGroup">
                     <section class="firstName">
                         <label for="firstName"> First Name </label> 
@@ -161,7 +43,7 @@
 
                 <section class="passwordVerify">
                     <label for="passwordVerify"> Verify Password </label> <br>
-                    <input type="password" id="passwordVerify" name="passwordVerify" minlength="8" required />
+                    <input type="password" id="passwordVerify" name="passwordVerify" minlength="8" onblur="checkPasswordMatch()" required />
                 </section>
 
                 <button type="submit" id="signUpButton"> Sign up </button>
@@ -177,19 +59,35 @@
         </div>
     </div>
 
+    <script src="/static/js/signUpPage.js"></script>
+
     <script>
 
-        document.getElementById('signUpForm').addEventListener('submit', function(event){
+
+
+        function checkPasswordMatch() {
+            const password = document.getElementById("passwordSignUp").value;
+            const confirmPassword = document.getElementById("passwordVerify").value;
+            
+            if(password !== confirmPassword) {
+                alert("Passwords do not match!");
+            }
+        }
+    </script>
+
+    <!-- <script>
+            document.getElementById('signUpForm').addEventListener('submit', function(event){
             event.preventDefault();
 
         const firstName = document.getElementById('firstName').value;
+        console.log(firstName);
         const lastName = document.getElementById('lastName').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('passwordSignUp').value; 
         const validatePassword = document.getElementById('passwordVerify').value;
 
         // checking for input fields not empty 
-        if(!firstname || !lastName || !email || !password){
+        if(!firstName || !lastName || !email || !password){
             alert("All fields are required. Please fill in missing fields.");
             return;
         }
@@ -206,31 +104,31 @@
             return;
         }
 
-        // // grabbing users from Local Storage
-        // const users = JSON.parse(localStorage.getItem('users')) || [];
+        // grabbing users from Local Storage
+        const users = JSON.parse(localStorage.getItem('users')) || [];
 
-        // // searching user with matching email
-        // const user = users.find(u => u.email === email && u.password === password);
+        // searching user with matching email
+        const user = users.find(u => u.email === email && u.password === password);
 
-        // // saving user sign up in & redirect to login page 
-        // if(user){
+        // saving user sign up in & redirect to login page 
+        if(user){
 
-        //     localStorage.setItem('loggedInUser', JSON.stringify(user));
-        //     alert("Successful Login!");
+            localStorage.setItem('loggedInUser', JSON.stringify(user));
+            alert("Successful Login!");
 
-        //     // redirection to page after Sign Up
-        //     setTimeout(() => {
-        //         window.location.href = '/app/templates/dashboard.html'
+            // redirection to page after Sign Up
+            setTimeout(() => {
+                window.location.href = '/app/templates/loginPage.html'
 
-        //     }, 1000);
-        // }
+            }, 1000);
+        }
 
-        // else{ 
-        //     alert('Invalid username or password');
-        // }
-    });
-
-    </script>
+        else{ 
+            alert('Invalid username or password');
+        }
+        });
+    </script> -->
 
 </body>
+
 </html>

@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Profile Page </title>
+    <link rel="stylesheet" href="/static/css/profile.css">
+
+</head>
+
+<body>
+    <div class="profilePageContainer">
+        <div class="profileInfoSide">
+            <img src="../static/assets/profileIcon.png" alt="Profile Img" id="profileImg">
+            <p id="userName"> {{ user_data.firstName }}  {{ user_data.lastName }}</p>
+            <p id="userEmail"> Email: {{ user_data.email }}</p>
+            <p id="userPassword"> Password: ******** </p>
+        </div>
+    
+        <div class="deviceManagementSide">
+            <h1 id="myDevices"> My Devices</h1>
+
+            <div class="devicesList" id="devicesList">
+                <!-- Devices will be dynamically inserted here -->
+                 {% for device in user_data.devices %}
+                 <div class="devicePlaceholder">
+                    <p>{{ device.name }}</p>
+                 </div>
+                 {% endfor %}
+            </div>
+
+            <div class="buttonsContainer">
+                <button onclick="showAddDeviceModal()" id="addDevice"> + Add Device  </button>
+                <button onclick="removeDevice()" id="removeDevice"> - Remove Device </button>
+            </div>
+    
+        </div>
+    </div>
+
+    <div id="deviceModal" class="modal">
+        <div class="modal-conent">
+            <span class="close" onclick="closeAddDeviceModal()">&times;</span>
+            <h2>Register New Deivce</h2>
+            <form id="deviceForm">
+                <label for="deviceId">Device ID:</label>
+                <input type="text" id="deviceId" required>
+
+                <label for="deviceTopic">Topic (Name):</label>
+                <input type="text" id="deviceTopic" required>
+
+                <label for="deviceStatus">Status:</label>
+                <select id="deviceStatus">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/js/profile.js"></script>
+</body>
+</html>
