@@ -5,74 +5,8 @@
   <title>My Wardrobe</title>
   <link rel="stylesheet" href="/static/css/wardrobe.css" />
 
-  <!-- <style>
-    @font-face {
-    font-family: "Roboto Mono";
-    src: url("../static/assets/RobotoMono-VariableFont_wght.ttf") format("truetype");
-    font-style: normal;
-  }
-  
-  body{
-    height: 100vh;
-    margin: 0;
-    background: url("../static/assets/wardrobeBackground.png");
-    background-size: cover;
-    overflow-y: auto;
-  }
-  
-  h1{
-    font-family: "Roboto Mono";
-    color: white;
-    margin-left: 15%;
-    margin-top: 3%;
-  }
-  
-  .wardrobeCard {
-    width: 80%;
-    height: 80%;
-    background-color: white;
-    margin: auto;
-  }
-  
-  button{
-    font-family: "Roboto Mono";
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 0.5% 1%;
-    margin-top: 3%;
-  }
-  
-  .crudButtonBar{
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  #filterClothesButton,
-  #updateClothingButton {
-    background: #6596CC;
-  }
-  
-  #addClothingButton {
-    background: #4c914ccd;
-  }
-  
-  #removeClothingButton {
-    background: #c53e3ec7;
-  }
-  
-  #filterClothesButton {
-    margin-right: auto;
-    margin-left: 2%;
-  }
-  
-  #updateClothingButton {
-    margin-right: 2%;
-  }
-  
-  </style> -->
 </head>
+
 <body>
   <h1>My Wardrobe</h1>
 
@@ -83,28 +17,77 @@
       <button onclick="removeClothingItem()" id="removeClothingButton"> - Remove</button>
       <button onclick="updateClothingItem()" id="updateClothingButton">Update</button>
     </div>
+
+    <div class="addClothingWindow" id="addWindow">
+      <form action="#" class="addItemForm">
+        <h2> Add Clothing Item</h2>
+       
+        <label for="clothingName"> Item Name: </label>
+        <input type="text" id="clothingName" name="clothingName" required /> <br>
+
+        <label for="itemSize"> Category: </label>
+          <select id="itemCategory" name="itemCategory" required>
+            <option value="tops"> tops </option>
+            <option value="pants"> pants </option>
+            <option value="shoes"> shoes </option>
+          </select>
+          <br>
+
+        <label for="itemSize"> Size: </label>
+          <select id="itemSize" name="itemSize" required>
+            <option value="xx-small"> xx-small </option>
+            <option value=" x-small"> x-small </option>
+            <option value="small"> small </option>
+            <option value="medium"> medium </option>
+            <option value="large"> large </option>
+            <option value="x-large"> x-large </option>
+            <option value="xx-large"> xx-large </option>
+          </select>
+          <br>
+
+          <button type="submit" id="addItemButton"> Add Item </button>
+      </form>
+
+      <button onclick="closeForm()" id="closeAdd"> X </button>
+    </div>
+
+    <div class="removeClothingWindow" id="removeWindow">
+      <form action="#" class="removeItemForm">
+        <h2> Remove Clothing Item</h2>
+       
+        <label for="clothingNameRemove" id="itemNameRemove"> Item Name: </label>
+        <input type="text" id="clothingNameRemove" name="clothingNameRemove" required /> <br>
+
+          <button type="submit" id="removeItemButton"> Remove Item </button>
+      </form>
+
+      <button onclick="closeForm()" id="closeRemove"> X </button>
+    </div>
+
+    <div class="updateClothingWindow" id="updateWindow">
+      <form action="#" class="updateItemForm">
+        <h2> Update Clothing Item</h2>
+       
+        <label for="currentItemName" id="currItemLabel"> Item Name: </label>
+        <input type="text" id="currentItemName" name="currentItemName" required /> <br>
+
+        <label for="newItemName"> New Item Name: </label>
+        <input type="text" id="newItemName" name="newItemName" required /> <br>
+
+          <button type="submit" id="updateItemButton"> Update Item </button>
+      </form>
+
+      <button onclick="closeForm()" id="closeUpdate"> X </button>
+    </div>
+    
+    <div class="clothingDisplay" id="clothingDisplay">
+      <!-- Clothing cards will be dynamically added here -->
+    </div>
+    
+
   </div>
 
-  <script>
-    function filterClothingItem() {
-      // TODO: Add logic
-      console.log("Clothes Filter");
-    }
-
-    function addClothingItem() {
-      // TODO: Add logic
-      console.log("Clothing Item Added");
-    }
-
-    function removeClothingItem() {
-      // TODO: Add logic
-      console.log("Clothing Item Removed");
-    }
-
-    function updateClothingItem() {
-      // TODO: Add logic
-      console.log("Clothing Item Updated");
-    }
-  </script>
+  <script src="/static/js/wardrobe.js"></script>
 </body>
 </html>
+

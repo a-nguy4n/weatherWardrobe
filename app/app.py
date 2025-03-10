@@ -9,18 +9,28 @@ from contextlib import asynccontextmanager
 
 from database import (
     setup_database,
+
     get_user_by_username,
     get_user_by_id,
     create_user,
+    get_all_users,
+    get_id_by_user,
+
     create_session,
     get_session,
     delete_session,
-    get_all_users,
+    
     get_user_devices,
     add_user_device,
     delete_user_device,
     get_device,
-    get_id_by_user
+    get_devices,
+
+    get_wardrobe,
+    get_user_wardrobe,
+    add_wardrobe_item,
+    remove_wardrobe_item,
+    update_wardrobe_item,
 )
 
 
@@ -37,8 +47,8 @@ async def lifespan(app: FastAPI):
     """
     # Startup: Setup resources
     try:
-        # await setup_database(INIT_USERS)  # Make sure setup_database is async
-        await setup_database()  # Make sure setup_database is async
+        await setup_database(INIT_USERS)  # Make sure setup_database is async
+        # await setup_database()  # Make sure setup_database is async
         print("Database setup completed")
         yield
     finally:
@@ -214,7 +224,30 @@ async def add_device(request: Request, username: str, deviceId: str=Form(...), d
     
     await add_user_device(deviceId, user_id["id"], deviceTopic, "active")
     return RedirectResponse(url=f"/profile/{username}", status_code=303)
+
+@app.delete("/profile/{username}/{id}")
+async def delete_device(username: str, id: str):
+    user_id = await get_id_by_user(username)
+    print(user_id)
+    existing_device = await get_device(id, user_id["id"])
+    if existing_device is None:
+        # return JSONResponse(status_code=404, content={"error": "Device not found"})
+        return HTMLResponse("<p>Device not found. Try again.</p>", status_code=404)
     
+    await delete_user_device(id, user_id["id"])
+    # return JSONResponse(status_code=200, content={"message": "Device removed successfully"})
+    return RedirectResponse(url=f"/profile/{username}", status_code=303)
+
+@app.get("/all-user-devices")
+async def all_user_devices():
+    devices = await get_devices()
+    if devices is None:
+        return {"message": "Could not retrieve devices"}
+    
+    return {"devices": devices}
+    
+
+##### WARDROBE #########
 
 @app.get("/wardrobe/{username}", response_class=HTMLResponse)
 async def wardrobe(username: str, request: Request):
@@ -230,6 +263,55 @@ async def wardrobe(username: str, request: Request):
         return HTMLResponse(content=get_error_html(username), status_code=403)
     
     return templates.TemplateResponse("/wardrobe.html", {"request": request})
+
+@app.post("/api/wardrobe/add")
+async def add_item(
+    request: Request,
+    username: str = Form(...),
+    name: str = Form(...),
+    category: str = Form(...),
+    size: str = Form(...)):
+    """Add a new clothing item to the user's wardrobe"""
+    user = await get_id_by_user(username)
+    if not user:
+        return JSONResponse(content={"error": "User not found"}, status_code=404)
+    
+    await add_wardrobe_item(user["id"], name, category, size)
+    return JSONResponse(content={"message": "Item added successfully"}, status_code=201)
+
+@app.delete("/api/wardrobe/remove/{item_id}")
+async def remove_item(item_id: int):
+    """Remove a clothing item from the user's wardrobe"""
+    await remove_wardrobe_item(item_id)
+    return JSONResponse(content={"message": "Item removed successfully"}, status_code=200)
+
+@app.put("/api/wardrobe/update")
+async def update_item(
+    request: Request,
+    item_id: int = Form(...),
+    new_name: str = Form(...)):
+    """Update a clothing item's name in the wardrobe"""
+    await update_wardrobe_item(item_id, new_name)
+    return JSONResponse(content={"message": "Item updated successfully"}, status_code=200)
+
+
+
+#### TESTING  #######
+@app.get("/all-clothes")
+async def all_clothes():
+    users = await get_wardrobe()
+    if users is None:
+        return {"message": "Could not retrieve users"}
+    
+    return {"users": users}
+
+@app.get("/api/user/me")
+async def get_user(request: Request):
+    sessionId = await get_session(request.cookies.get("sessionId"))
+    if sessionId:
+        user = await get_user_by_id(sessionId["user_id"])
+        username = user["email"]
+    return JSONResponse(content={"username": username})
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="localhost", port=8000, reload=True)

@@ -369,12 +369,15 @@ async def add_user_device(id: str, user_id: int, topic: str, status: str):
     """Insert a new device into the database."""
     connection = None
     cursor = None
+
+    unique_id = id + str(user_id)
+
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute(
             "INSERT INTO devices (id, user_id, topic, status) VALUES (%s, %s, %s, %s)",
-            (id, user_id, topic, status)
+            (unique_id, user_id, topic, status)
         )
         connection.commit()
         return True
@@ -384,13 +387,13 @@ async def add_user_device(id: str, user_id: int, topic: str, status: str):
         if connection and connection.is_connected():
             connection.close()
 
-async def delete_user_device(id: str):
+async def delete_user_device(id: str, user_id: int):
     connection = None
     cursor = None
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute("UPDATE devices SET status = 'inactive' WHERE id = %s", (id,))
+        cursor.execute("DELETE FROM devices WHERE id = %s AND user_id = %s", (id, user_id,))
         connection.commit()
         return True
     finally:
@@ -398,3 +401,78 @@ async def delete_user_device(id: str):
             cursor.close()
         if connection and connection.is_connected():
             connection.close()
+
+async def get_devices():
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM devices")
+        return cursor.fetchall()
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+######## WARDROBE  ##############
+async def get_wardrobe():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        cursor.execute("SELECT * FROM wardrobe")
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        connection.close()
+
+
+async def get_user_wardrobe(user_id: int):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        cursor.execute("SELECT * FROM wardrobe WHERE user_id = %s", (user_id,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        connection.close()
+
+async def add_wardrobe_item(user_id: int, name: str, category: str, size: str):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("INSERT INTO wardrobe (user_id, name, category, size) VALUES (%s, %s, %s, %s)", (user_id, name, category, size))
+        connection.commit()
+    finally:
+        cursor.close()
+        connection.close()
+
+async def remove_wardrobe_item(item_id: int):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("DELETE FROM wardrobe WHERE id = %s", (item_id,))
+        connection.commit()
+    finally:
+        cursor.close()
+        connection.close()
+
+async def update_wardrobe_item(item_id: int, new_name: str):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("UPDATE wardrobe SET name = %s WHERE id = %s,", (new_name, item_id))
+        connection.commit()
+    finally:
+        cursor.close()
+        connection.close()
+
+    

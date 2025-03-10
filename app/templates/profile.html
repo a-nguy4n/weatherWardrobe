@@ -22,7 +22,7 @@
 
             <div class="devicesList" id="devicesList">
                 {% for device in devices %}
-                <div class="deviceCard">
+                <div class="deviceCard" id="deviceCard{{ device.id}}">
                     <p><strong>Device ID:</strong> {{ device.id }}</p>
                     <p><strong>Topic:</strong> {{ device.topic }}</p>
                     <p><strong>Status:</strong> {{ device.status }}</p>
@@ -38,7 +38,7 @@
                         
                         <form id="deviceForm" method="POST">
                             <label for="deviceId">Device ID:</label>
-                            <input type="text" id="deviceId" name="deviceId" placeholder="Enter device name" required/>
+                            <input type="text" id="deviceId" name="deviceId" placeholder="Enter device ID" required/>
 
                             <label for="deviceTopic">Device Topic:</label>
                             <input type="text" id="deviceTopic" name="deviceTopic" placeholder="Enter device topic" required />
@@ -47,7 +47,21 @@
                         </form>
                     </div>
                 </div>
-                <button onclick="removeDevice()" id="removeDevice"> Remove Device </button>
+                <button id="removeDevice"> Remove Device </button>
+                <div id="removeModal" class="removeModal">
+                    <div class="remove-modal-content">
+                        <span class="removeClose">&times;</span>
+                        
+                        <div class="devicesList" id="devicesList">
+                            {% for device in devices %}
+                            <div class="deviceItem" id="{{ device.id }}">
+                                <p style="color: blue;">Device ID: {{ device.id }} - Topic: {{ device.topic}}</p>
+                                <button onclick="removeDevice('{{ device.id }}', '{{ user_data.email }}')">Remove</button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>

@@ -1,65 +1,193 @@
 @font-face {
-    font-family: "Roboto Mono";
-    src: url(/static/assets/RobotoMono-VariableFont_wght.ttf) format("truetype");
-    font-style: normal;
-  }
-  
-  body{
-    height: 100vh;
-    margin: 0;
-    background: url(/static/assets/wardrobeBackground.png);
-    background-size: cover;
-    overflow-y: auto;
-  }
-  
-  h1{
-    font-family: "Roboto Mono";
-    color: white;
-    margin-left: 15%;
-    margin-top: 3%;
-  }
-  
-  .wardrobeCard {
-    width: 80%;
-    height: 80%;
-    background-color: white;
-    margin: auto;
-  }
-  
-  button{
-    font-family: "Roboto Mono";
+  font-family: "Roboto Mono";
+  src: url("/static/assets/RobotoMono-VariableFont_wght.ttf") format("truetype");
+  font-style: normal;
+}
+
+body{
+  height: 100vh;
+  margin: 0;
+  background: url("/static/assets/wardrobeBackground.png");
+  background-size: cover;
+  overflow-y: auto;
+}
+
+h1{
+  font-family: "Roboto Mono";
+  color: white;
+  margin-left: 15%;
+  margin-top: 3%;
+}
+
+.wardrobeCard {
+  width: 80%;
+  height: 80%;
+  background-color: white;
+  margin: auto;
+}
+
+button{
+  font-family: "Roboto Mono";
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.5% 1%;
+  margin-top: 3%;
+}
+
+.crudButtonBar{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#filterClothesButton,
+#updateClothingButton {
+  background: #6596CC;
+}
+
+#addClothingButton {
+  background: #4c914ccd;
+}
+
+#removeClothingButton {
+  background: #c53e3ec7;
+}
+
+#filterClothesButton {
+  margin-right: auto;
+  margin-left: 2%;
+}
+
+#updateClothingButton {
+  margin-right: 2%;
+}
+
+#filterClothesButton:hover {
+background: #4a7bbf; 
+transform: scale(1.05); 
+}
+
+#addClothingButton:hover{
+  background: #3a7b3a; 
+  transform: scale(1.05);
+}
+
+#removeClothingButton:hover{
+  background: #a83232; 
+  transform: scale(1.05);
+}
+
+#updateClothingButton:hover{
+  background: #4a7bbf;
+  transform: scale(1.05);
+}
+
+.addClothingWindow,
+.removeClothingWindow,
+.updateClothingWindow{
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid #f1f1f1;
+    z-index: 10;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 320px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.addItemForm,
+.removeItemForm,
+.updateItemForm{
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+  font-family: "Roboto Mono";
+}
+
+#addItemButton,
+#removeItemButton,
+#updateItemButton{
+    background: #4176ae;
+}
+
+#addItemButton:hover,
+#removeItemButton:hover,
+#updateItemButton:hover{
+  background: #1e4d80; 
+  transform: scale(1.05);
+}
+
+#closeAdd,
+#closeRemove,
+#closeUpdate{
+    background: #ae4141;
+    position: absolute;
+    top: 10px;
+    right: 10px;
     color: white;
     border: none;
-    border-radius: 12px;
-    padding: 0.5% 1%;
-    margin-top: 3%;
-  }
-  
-  .crudButtonBar{
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 1rem;
-  }
-  
-  #filterClothesButton,
-  #updateClothingButton {
-    background: #6596CC;
-  }
-  
-  #addClothingButton {
-    background: #4c914ccd;
-  }
-  
-  #removeClothingButton {
-    background: #c53e3ec7;
-  }
-  
-  #filterClothesButton {
-    margin-right: auto;
-    margin-left: 2%;
-  }
-  
-  #updateClothingButton {
-    margin-right: 2%;
-  }
-  
+    justify-content: center;
+}
+
+#closeAdd:hover,
+#closeRemove:hover,
+#closeUpdate:hover{
+  background: #811b1b;
+  transform: scale(1.05);
+}
+
+/*----------Clothing Display---------------*/
+
+.clothingDisplay{
+display: flex;
+flex-wrap: wrap;
+gap: 1rem;
+padding: 20px;
+justify-content: center;
+}
+
+.clothingCard{
+background: white;
+padding: 15px;
+border-radius: 8px;
+box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+width: 200px;
+text-align: center;
+font-family: "Roboto Mono";
+border: 1px solid #ccc;
+}
+
+.clothingCard h3{
+margin: 5px 0;
+}
+
+.clothingCard p{
+margin: 3px 0;
+}
+
+.removeCardButton{
+background: #c53e3ec7;
+color: white;
+border: none;
+border-radius: 8px;
+padding: 5px 10px;
+cursor: pointer;
+margin-top: 5px;
+}
+
+.removeCardButton:hover{
+background: #a02020;
+}
