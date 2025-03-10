@@ -453,23 +453,23 @@ async def add_wardrobe_item(user_id: int, name: str, category: str, size: str):
         cursor.close()
         connection.close()
 
-async def remove_wardrobe_item(item_id: int):
+async def remove_wardrobe_item(user_id: int, name: str):
     connection = get_db_connection()
     cursor = connection.cursor()
 
     try:
-        cursor.execute("DELETE FROM wardrobe WHERE id = %s", (item_id,))
+        cursor.execute("DELETE FROM wardrobe WHERE user_id = %s AND LOWER(name) = LOWER(%s)", (user_id, name,))
         connection.commit()
     finally:
         cursor.close()
         connection.close()
 
-async def update_wardrobe_item(item_id: int, new_name: str):
+async def update_wardrobe_item(user_id: int, old_name: str, new_name: str):
     connection = get_db_connection()
     cursor = connection.cursor()
 
     try:
-        cursor.execute("UPDATE wardrobe SET name = %s WHERE id = %s,", (new_name, item_id))
+        cursor.execute("UPDATE wardrobe SET name = %s WHERE user_id = %s AND name = %s", (new_name, user_id, old_name))
         connection.commit()
     finally:
         cursor.close()

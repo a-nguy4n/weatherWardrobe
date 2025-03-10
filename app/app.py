@@ -279,22 +279,55 @@ async def add_item(
     await add_wardrobe_item(user["id"], name, category, size)
     return JSONResponse(content={"message": "Item added successfully"}, status_code=201)
 
-@app.delete("/api/wardrobe/remove/{item_id}")
-async def remove_item(item_id: int):
+@app.delete("/api/wardrobe/remove/{name}")
+async def remove_item(request: Request, name: str):
     """Remove a clothing item from the user's wardrobe"""
-    await remove_wardrobe_item(item_id)
+    sessionId = request.cookies.get("sessionId")
+
+    session = await get_session(sessionId)
+
+    if not session:
+        return RedirectResponse("/login")
+    
+    getUser = await get_user_by_id(session["user_id"])
+    if getUser is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    await remove_wardrobe_item(getUser["id"], name.lower())
     return JSONResponse(content={"message": "Item removed successfully"}, status_code=200)
 
 @app.put("/api/wardrobe/update")
 async def update_item(
     request: Request,
-    item_id: int = Form(...),
+    old_name: str = Form(...),
     new_name: str = Form(...)):
     """Update a clothing item's name in the wardrobe"""
-    await update_wardrobe_item(item_id, new_name)
+    sessionId = request.cookies.get("sessionId")
+
+    session = await get_session(sessionId)
+
+    if not session:
+        return RedirectResponse("/login")
+    
+    getUser = await get_user_by_id(session["user_id"])
+    if getUser is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    await update_wardrobe_item(getUser["id"], old_name, new_name)
     return JSONResponse(content={"message": "Item updated successfully"}, status_code=200)
 
+@app.get("/api/wardrobe")
+async def get_user_wardrobe_items(request: Request):
+    sessionId = request.cookies.get("sessionId")
 
+    session = await get_session(sessionId)
+
+    if not session:
+        return RedirectResponse("/login")
+    
+    getUser = await get_user_by_id(session["user_id"])
+    if getUser is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    wardrobe_items = await get_user_wardrobe(getUser["id"])
+    return JSONResponse(content=wardrobe_items, status_code=200)
 
 #### TESTING  #######
 @app.get("/all-clothes")
