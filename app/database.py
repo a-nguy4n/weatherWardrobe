@@ -476,3 +476,4 @@ async def update_wardrobe_item(user_id: int, old_name: str, new_name: str):
         connection.close()
 
 ###### DASHBOARD ##########
+

@@ -2,28 +2,7 @@
 <html>
   <head>
     <title>Welcome</title>
-    <style>
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-      }
-      .logout-form {
-        margin: 0;
-      }
-      .logout-button {
-        padding: 8px 16px;
-        background-color: #f44336;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      .logout-button:hover {
-        background-color: #d32f2f;
-      }
-    </style>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
   </head>
   <body>
     <div class="header">
@@ -35,20 +14,17 @@
     <div id="profile-link-container">
       <a id="user-profile-link" href="#">Go to Profile</a>
     </div>
-  </body>
-  <script>
-    window.onload = function () {
-      // Get the username from the URL path
-      const path = window.location.pathname;
-      const username = path.split('/user/')[1];
 
-      // Update the welcome message
-      document.getElementById(
-        'welcome-message'
-      ).textContent = `Welcome, {username}!`;
-      const profileLink = document.getElementById('user-profile-link');
-      profileLink.href = `/profile/{username}`;
-      profileLink.textContent = `Go to {username}'s Profile`;
-    };
-  </script>
+    <div id="weather-container">
+      <form id="city_form">
+        <label for="city">Enter your city:</label>
+        <input type="text" id="city" required><br>
+        <input type="submit">
+      </form>
+
+      <span class="info"></span>
+    </div>
+
+  </body>
+  <script src="/static/js/dashboard.js"></script>
 </html>
