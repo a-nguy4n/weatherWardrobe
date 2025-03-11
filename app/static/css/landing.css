@@ -1,0 +1,112 @@
+@font-face{
+    font-family: "Roboto Mono";
+    src: url(/static/assets/RobotoMono-VariableFont_wght.ttf) format(truetype);
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Tilt Warp";
+    src: url(/static/assets/TiltWarp-Regular-VariableFont.ttf) format(truetype);
+    font-style: normal;
+}
+
+body{
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #629ada 0%, #dde8f2 50%, #ffffff 85%);
+
+    overflow-y: auto;
+}
+
+.frontPage{
+    display: flex;
+    flex-direction: column;
+}
+
+.linkBar{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-top: 1%;
+    margin-right: 3%;
+}
+
+a {
+    text-decoration: none;
+    font-family: "Roboto Mono";
+    font-size: 1.35vw;
+    color: white;
+    margin-left: 4%;
+}
+
+#landingGraphic,
+#tagLineLanding{
+    margin: auto;
+}
+
+#landingGraphic{
+    width: 30vw;
+    margin-top: 5%;
+    margin-bottom: 10%;
+}
+
+#tagLineLanding{
+    color:#2d78cf;
+    font-family: "Tilt Warp";
+    font-size: 2.4vw;
+}
+
+.bottomPage {
+    background: transparent;
+    display: flex;
+    flex-direction: row;
+    margin-top: 30vh;
+    margin: 5%; 
+    font-family: "Roboto Mono";
+    color: #4d97eb;
+}
+
+.aboutProject,
+.aboutTeam{
+    width: 50%;
+    box-sizing: border-box; 
+    margin: 3%;
+    display: block;
+}
+
+h2{
+    font-weight: bold;
+    font-size: 1.5vw;
+}
+
+#projectDescription,
+#memberOneDescription,
+#memberTwoDescription{
+    font-weight: 400;
+    font-size: 1vw;
+}
+
+#memberOneProf,
+#memberTwoProf{
+    width: 12vw;
+    height: 11vh;
+    margin: 3%;
+}
+
+.memberOneContent,
+.memberTwoContent{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 3%;
+}
+
+#gloomyCloudsGraphic{
+    width: 9vw;
+    margin-left: 65%;
+}
+
+#rainbowGraphic{
+    width: 12vw;
+    transform: rotate(-15deg);
+}
+

@@ -3,10 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome!</title>
+    <title> Landing Page </title>
+    <link rel="stylesheet" href="/static/css/landing.css">
 </head>
 <body>
-    <h1>ECE 140A: Technical Assignment 7</h1>
-    <a href="/login">Login</a>
+    <div class="frontPage">
+        <section class="linkBar">
+            <a href="#aboutSection">About</a>
+            <a href="/login">Login</a>
+            <a href="/signup"> Sign Up</a>
+        </section>
+
+        <img src="/static/assets/landingGraphic.png" alt="Landing Graphic" id="landingGraphic">
+        <h1 id="tagLineLanding"> Made for you. Dressing right. Rain or Shine.</h1>
+    </div>
+
+    <div class="bottomPage" id="aboutSection">
+        <section class="aboutProject">
+            <h2> About AuraFit </h2>
+            <p id="projectDescription"> 
+                AuraFit is a smart wardrobe application that combines weather analytics with personal styling to generate 
+                the most suitable outfit recommendations. Using real-time climate data, machine learning, and an intuitive interface, 
+                AuraFit provides tailored fashion suggestions to match the forecast.
+            </p>
+            <img src="/static/assets/gloomyClouds.png" alt="Gloomy Clouds" id="gloomyCloudsGraphic"> <br>
+            <img src="/static/assets/rainbow.png" alt="Rainbow" id="rainbowGraphic">
+
+
+        </section>
+
+        <section class="aboutTeam">
+            <h2> About the Team </h2>
+            <section class="memberOneContent">
+                <img src="/static/assets/memberOneProfile.png" alt="Member One" id="memberOneProf">
+                <p id="memberOneDescription">
+                    Heya! My name is Allison Nguyen! I am currently studying Computer Engineering at UCSD as I aspire to be a product
+                    designer in the future. Working with Michael, my teammate, I am excited to present AuraFit as a smarter means to 
+                    dress for the weather! 
+                </p>
+            </section>
+
+            <section class="memberTwoContent">
+                <p id="memberTwoDescription">
+                    Hi! I’m Michael and I’m part of the team here at AuraFit. I’m currently a third year student at the University 
+                    of California, San Diego studying Computer Engineering. Building this project with my co-developer Allison over 
+                    the past few weeks has been a valuable learning experience. Outside of this development, I am interested in cars, 
+                    photography, and cooking. 
+                </p>
+                <img src="/static/assets/memberTwoProfile.png" alt="Member Two" id="memberTwoProf">
+            </section>
+       
+
+            <p id="teamStatement">
+
+            </p>
+        </section>
+    </div>
+
+
+
+
 </body>
 </html>
