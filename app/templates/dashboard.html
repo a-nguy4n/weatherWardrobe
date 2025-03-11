@@ -1,11 +1,39 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Welcome</title>
+    <title>Dashboard Page</title>
     <link rel="stylesheet" href="/static/css/dashboard.css">
   </head>
+
   <body>
-    <div class="header">
+    
+    <h1 id="dashTitle"> Dashboard </h1>
+
+    <div class="dashLayout">
+      <section class="weatherForecast">
+        <div class="findCityForm">
+          <form id="findCity">
+            <input type="text" id="cityInput" placeholder="Enter your city">
+            <button type="submit" id="submitCity"> Go! </button>
+          </form>
+        </div>
+
+        <div class="weatherCards">
+
+        </div>
+      </section>
+
+      <section class="dataGraphs">
+        <div class="card"> Temperature </div>
+        <div class="card"> Humidity </div>
+        <div class="card"> Light </div>
+      </section>
+    </div>
+
+
+  </body>
+
+    <!-- <div class="header">
       <h1 id="welcome-message">Welcome!</h1>
       <form class="logout-form" action="/logout" method="POST">
         <button class="logout-button" type="submit">Logout</button>
@@ -26,5 +54,5 @@
     </div>
 
   </body>
-  <script src="/static/js/dashboard.js"></script>
+  <script src="/static/js/dashboard.js"></script> -->
 </html>
