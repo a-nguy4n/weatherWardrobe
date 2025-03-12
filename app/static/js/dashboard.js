@@ -5,19 +5,19 @@ window.onload = function () {
 
     // Update the welcome message
     document.getElementById(
-      'welcome-message'
-    ).textContent = `Welcome, ${username}!`;
-    const profileLink = document.getElementById('user-profile-link');
-    profileLink.href = `/profile/${username}`;
-    profileLink.textContent = `Go to ${username}'s Profile`;
+      'dashTitle'
+    ).textContent = `${username}'s Dashboard`;
+    // const profileLink = document.getElementById('user-profile-link');
+    // profileLink.href = `/profile/${username}`;
+    // profileLink.textContent = `Go to ${username}'s Profile`;
   };
 
-  const city_form = document.getElementById("city_form");
+  const city_form = document.getElementById("findCity");
 
   city_form.addEventListener("submit", (event) => {
       event.preventDefault();
   
-      const city_input = document.getElementById("city");
+      const city_input = document.getElementById("cityInput");
       const city_value = city_input.value.trim();
       const city_name = city_value.replace(" ", "%20");
       if(!city_name) {
