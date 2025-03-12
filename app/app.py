@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, Request, Response, HTTPException, status, Form
+from fastapi import FastAPI, Request, Response, HTTPException, status, Form, Body
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -31,6 +31,10 @@ from database import (
     add_wardrobe_item,
     remove_wardrobe_item,
     update_wardrobe_item,
+
+    get_all_data,
+    get_user_sensor_data,
+    add_user_sensor_data,
 )
 
 
@@ -329,6 +333,34 @@ async def get_user_wardrobe_items(request: Request):
     wardrobe_items = await get_user_wardrobe(getUser["id"])
     return JSONResponse(content=wardrobe_items, status_code=200)
 
+
+####### SENSOR DATA #######
+@app.get("/sensor_data/{username}", response_class=HTMLResponse)
+async def sensorData(username: str, request: Request):
+    sessionId = request.cookies.get("sessionId")
+
+    session = await get_session(sessionId)
+
+    if not session:
+        return RedirectResponse("/login")
+    
+    getUser = await get_user_by_id(session["user_id"])
+    if getUser is None or getUser["email"] != username:
+        return HTMLResponse(content=get_error_html(username), status_code=403)
+    return templates.TemplateResponse("/dashboard.html", {"request": request})
+
+@app.post("/api/sensor_data/add")
+async def add_sensor_data(
+    request: Request,
+    device_id: str = Body(...),
+    value: float = Body(...)):
+    
+    await add_user_sensor_data(device_id, value)
+    return JSONResponse(content={"message": "Data added successfully"}, status_code=201)
+
+
+
+
 #### TESTING  #######
 @app.get("/all-clothes")
 async def all_clothes():
@@ -345,6 +377,13 @@ async def get_user(request: Request):
         user = await get_user_by_id(sessionId["user_id"])
         username = user["email"]
     return JSONResponse(content={"username": username})
+
+@app.get("/all-data")
+async def all_sensor_data():
+    sensor_data = await get_all_data()
+    if sensor_data is None:
+        return {"message": "Could not retrieve all sensor data"}
+    return {"sensor_data": sensor_data}
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="localhost", port=8000, reload=True)

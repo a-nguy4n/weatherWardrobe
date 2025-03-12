@@ -477,3 +477,52 @@ async def update_wardrobe_item(user_id: int, old_name: str, new_name: str):
 
 ###### DASHBOARD ##########
 
+
+
+#### SENSOR DATA ######
+async def get_all_data():
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM sensorData")
+        sensorData = cursor.fetchall()
+
+        return sensorData
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+async def get_user_sensor_data(user_id: int):
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM sensorData WHERE user_id = %s", (user_id,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        connection.close()
+
+async def add_user_sensor_data(user_id: int, device_id: str, value: float):
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        
+        cursor.execute("INSERT INTO sensorData (device_id, value) VALUES (%s, %s)", (device_id, value))
+        connection.commit()
+    finally:
+        cursor.close()
+        connection.close()
