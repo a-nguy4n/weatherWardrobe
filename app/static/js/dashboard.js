@@ -46,6 +46,9 @@ window.onload = function () {
                   let current_forecast = response.properties.periods[0];
   
                   const spanSelect = document.querySelector("span");
+
+                  spanSelect.innerHTML = "";
+
                   const location = document.createElement("p");
                   const weather_condition = document.createElement("p");
                   const temperature = document.createElement("p");
@@ -60,4 +63,12 @@ window.onload = function () {
               }); 
           });
       });
+  });
+
+  const ai_button = document.getElementById("ai_button");
+  
+  ai_button.addEventListener("click", (event) => {
+    event.preventDefault();
+
+
   });
