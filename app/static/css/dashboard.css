@@ -48,6 +48,7 @@ body{
   padding: 0.5vw;
   border: 1px solid #ccc;
   border-radius: 10px;
+  color: #0a4384;
 }
 
 #submitCity{
@@ -63,61 +64,294 @@ body{
 
 .dataCards{
   display: flex;
-  flex-direction: row;
+  /* flex-direction: row; */
   gap: 2vw;
   flex-wrap: wrap;
   margin-left: 2%;
   margin-bottom: 5%;
+  align-items: flex-start;
 }
 
-#cityCard{
-  width: 35%;
-  height: 45vh;
+#cityCard {
+  width: 30%;
+  height: 55vh;
   background-color: rgba(255, 255, 255, 0.937);
-  color: blue;
   border-radius: 15px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
 }
 
 #tempCard{
   width: 60%;
-  height: 45vh;
+  height: 55vh;
   background-color: rgba(255, 255, 255, 0.937);
-  color: blue;
   border-radius: 15px;
 }
 
-#suggestCard{
-  width: 55%;
+#suggestCard {
+  width: 60%;
   height: 25vh;
   background-color: rgba(255, 255, 255, 0.937);
-  color: blue;
   border-radius: 15px;
+  margin-left: 33%;
+}
+
+h2{
+  font-weight: 350;
+  font-size: 1.6vw;
+  justify-self: center;
+  color: #487fbd;
+}
+
+.container-cityInfo{
+  margin-left: 5%;
+}
+
+.cityInfo{
+  font-weight: 300;
+  font-size: 1vw;
+  color:#3f80cb;
+
+}
+.container-cityInfo {
+  width: 90%;
+  text-align: center;
+}
+
+.cityInfoAnimation {
+  width: 90%;
+  height: 250px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* SUNNY CONDITION */
+.sunny {
+  background: linear-gradient(to top, #87CEEB, #4682B4); /* Light blue gradient sky */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sun {
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, #FFD700, #FFB600);
+  border-radius: 50%;
+  box-shadow: 0 0 30px rgba(255, 255, 0, 0.6);
+  animation: sunGlow 3s infinite alternate;
+}
+
+@keyframes sunGlow {
+  0% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 255, 0, 0.6); }
+  100% { transform: scale(1.1); box-shadow: 0 0 40px rgba(255, 255, 0, 0.8); }
+}
+
+.hill{
+  position: absolute;
+  bottom: 0;
+  background: linear-gradient(to top, #149414, #32CD32); 
+  border-radius: 50%;
+}
+
+.hill1{
+  left: -20%;
+  width: 70%;
+  height: 140px;
+}
+
+.hill2{
+  left: 5%;
+  width: 90%;
+  height: 180px;
+}
+
+.hill3{
+  left: 25%;
+  width: 85%;
+  height: 160px;
+}
+
+.hill4{
+  left: -10%;
+  width: 110%;
+  height: 150px;
 }
 
 
+/* RAINY CONDITION */
+.rainy {
+  background: linear-gradient(to top, #2c5ba7c2, #3d66a7); /* Darker blue sky for rainy weather */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.rainy-cloud {
+  position: absolute;
+  width: 90px;
+  height: 50px;
+  background: #a2a4a8e4;
+  border-radius: 50px;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
+  opacity: 0.9;
+  animation: moveRainClouds 6s infinite alternate;
+}
+
+.rainy-cloud::before,
+.rainy-cloud::after {
+  content: "";
+  position: absolute;
+  background: #a2a4a8e4;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.rainy-cloud::before {
+  top: -20px;
+  left: 10px;
+}
+
+.rainy-cloud::after {
+  top: -15px;
+  left: 45px;
+}
+
+@keyframes moveRainClouds {
+  0% { transform: translateX(0px); opacity: 1; }
+  100% { transform: translateX(20px); opacity: 0.9; }
+}
+
+.raindrop {
+  position: absolute;
+  width: 5px;
+  height: 15px;
+  background: #7FC1F9;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: rainFall 1s infinite linear;
+}
+
+@keyframes rainFall {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(100px); opacity: 0; }
+}
 
 
+/* CLEAR CONDITION */
+.clear {
+  background: linear-gradient(to top, #87CEEB, #4682B4); /* Light blue sky gradient */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 
+.clear-sun {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle, #FFD700, #FFB600);
+  border-radius: 50%;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
+  animation: clearSunGlow 2s infinite alternate;
+}
 
+@keyframes clearSunGlow {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(1.3); }
+}
 
+.clear-cloud {
+  position: absolute;
+  width: 90px;
+  height: 45px;
+  background: white;
+  border-radius: 50px;
+  box-shadow: 10px 10px 20px rgba(255, 255, 255, 0.6);
+  opacity: 0.9;
+  animation: moveClearClouds 8s infinite linear alternate;
+}
 
-/* .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-  }
-  .logout-form {
-    margin: 0;
-  }
-  .logout-button {
-    padding: 8px 16px;
-    background-color: #f44336;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .logout-button:hover {
-    background-color: #d32f2f;
-  } */
+.clear-cloud::before,
+.clear-cloud::after {
+  content: "";
+  position: absolute;
+  background: white;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+}
+
+.clear-cloud::before {
+  top: -20px;
+  left: 15px;
+}
+
+.clear-cloud::after {
+  top: -10px;
+  left: 50px;
+}
+
+@keyframes moveClearClouds {
+  0% { transform: translateX(0px); opacity: 1; }
+  100% { transform: translateX(25px); opacity: 0.8; }
+}
+
+/* CLOUDY CONDITIONS */
+
+.cloudy{
+  background: linear-gradient(to top, #4a8cc1, #2c83b9); 
+}
+
+.cloudy-cloud{
+  position: absolute;
+  width: 90px;
+  height: 45px;
+  background: white;
+  border-radius: 50px;
+  box-shadow: 10px 10px 20px rgba(255, 255, 255, 0.6);
+  opacity: 0.9;
+  animation: moveClearClouds 4s infinite linear alternate;
+}
+
+.cloudy-cloud::before,
+.cloudy-cloud::after{
+  content: "";
+  position: absolute;
+  background: white;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+}
+
+.cloudy-cloud::before{
+  top: -20px;
+  left: 15px;
+}
+
+.cloudy-cloud::after{
+  top: -10px;
+  left: 50px;
+}
+
+@keyframes moveCloudyClouds {
+  0% { transform: translateX(0px); opacity: 1; }
+  100% { transform: translateX(25px); opacity: 0.8; }
+}
