@@ -2,6 +2,7 @@ import os
 import time
 import logging
 import mysql.connector
+import pandas as pd
 
 from typing import Optional
 from dotenv import load_dotenv
@@ -117,10 +118,11 @@ async def setup_database(initial_users: dict = None):
         "sensorData": """
             CREATE TABLE sensorData (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT NOT NULL,
-                device_id VARCHAR(36) NOT NULL,
+                user_id INT,
+                device_id VARCHAR(36),
                 sensor_type VARCHAR(100),
                 value FLOAT,
+                unit VARCHAR(50),
                 curr_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
                 FOREIGN KEY (device_id) REFERENCES devices(id) ON DELETE CASCADE
@@ -526,3 +528,19 @@ async def add_user_sensor_data(user_id: int, device_id: str, value: float):
     finally:
         cursor.close()
         connection.close()
+
+async def get_topic_by_user(user_id: int):
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT id FROM devices WHERE user_id = %s", (user_id,))
+        return cursor.fetchall()
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()

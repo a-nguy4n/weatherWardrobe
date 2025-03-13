@@ -6,3 +6,5 @@ mysql-connector-python
 python-dotenv
 jinja2
 aiofiles
+requests
+pandas
