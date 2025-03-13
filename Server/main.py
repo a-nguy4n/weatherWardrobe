@@ -5,6 +5,9 @@ import time
 import requests
 from dotenv import load_dotenv
 import os
+import asyncio
+
+from app.database import get_topic_by_user
 
 load_dotenv(dotenv_path="../IOT/.env")
 
@@ -21,6 +24,11 @@ TOPIC = f"{BASE_TOPIC}/#"
 #     print("Please enter a unique topic for your server")
 #     exit()
 
+async def fetch_topic(user_id):
+    devices = await get_topic_by_user(user_id)
+    if devices:
+        return [device["id"] for device in devices]
+    return []
 
 def on_connect(client, userdata, flags, rc):
     """Callback for when the client connects to the broker."""
@@ -31,7 +39,7 @@ def on_connect(client, userdata, flags, rc):
     else:
         print(f"Failed to connect with result code {rc}")
 
-API_ENDPOINT_URL = "http://0.0.0.0:8000/api/temperature"
+API_ENDPOINT_URL = "http://0.0.0.0:8000/api/sensor_data/add"
 # API_ENDPOINT_URL = "http://localhost:6543/api/temperature"
 prev_request_time = 0
 def on_message(client, userdata, msg):
@@ -50,7 +58,8 @@ def on_message(client, userdata, msg):
             # print("Payload: " , payload)
 
             # EXTRACTION
-            device_id = topic_parts[1]
+            # device_id = topic_parts[1]
+            device_id = "test1"
 
             temperature = payload.get("temperature")
             

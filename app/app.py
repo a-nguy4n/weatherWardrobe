@@ -3,8 +3,12 @@ from fastapi import FastAPI, Request, Response, HTTPException, status, Form, Bod
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+import requests
+import logging
+import os
 import uuid
 from typing import Dict
+from dotenv import load_dotenv
 from contextlib import asynccontextmanager
 
 from database import (
@@ -37,7 +41,9 @@ from database import (
     add_user_sensor_data,
 )
 
+logger = logging.getLogger(__name__)
 
+load_dotenv()
 
 # TODO: 1. create your own user
 INIT_USERS = {"alice": "pass123", "bob": "pass456", "michael": "testtest1232"}
@@ -58,7 +64,9 @@ async def lifespan(app: FastAPI):
     finally:
         print("Shutdown completed")
 
-
+AI_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/complete"
+EMAIL = "mdimapilis@ucsd.edu"
+PID = "A17362627" 
 # Create FastAPI app with lifespan
 app = FastAPI(lifespan=lifespan)
 
@@ -359,7 +367,33 @@ async def add_sensor_data(
     return JSONResponse(content={"message": "Data added successfully"}, status_code=201)
 
 
+####### AI API #######
+@app.post("/api/ai/query")
+async def ai_request(request: Request):
+    try:
+        data = await request.json()
+        prompt = data.get("prompt")
 
+        response = requests.post(
+            AI_API_URL,
+            headers= {
+                "Content-Type": "application/json",
+                "email": EMAIL,
+                "pid": PID
+            },
+            json={"prompt": prompt},
+        )
+
+        if not prompt:
+            raise HTTPException(status_code=400, detail="Prompt is required")
+        
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code, detail="AI API request failed")
+
+        return response.json()
+    except Exception as e:
+        logger.error(f"Error processing AI request: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 #### TESTING  #######
 @app.get("/all-clothes")
