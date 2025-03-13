@@ -366,6 +366,13 @@ async def add_sensor_data(
     await add_user_sensor_data(device_id, value)
     return JSONResponse(content={"message": "Data added successfully"}, status_code=201)
 
+@app.get("/api/userId")
+async def get_user(request: Request):
+    sessionId = await get_session(request.cookies.get("sessionId"))
+    if sessionId:
+        user = await get_user_by_id(sessionId["user_id"])
+        userId = user["id"]
+    return JSONResponse(content={"userId": userId})
 
 ####### AI API #######
 @app.post("/api/ai/query")

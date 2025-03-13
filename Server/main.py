@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import os
 import asyncio
 
-from app.database import get_topic_by_user
+from app.database import get_topic_by_user, get_session, get_user_by_id
 
 load_dotenv(dotenv_path="../IOT/.env")
 
@@ -19,23 +19,43 @@ BASE_TOPIC = os.getenv("BASE_TOPIC")
 # TOPIC = BASE_TOPIC + "/#"
 TOPIC = f"{BASE_TOPIC}/#"
 
+API_ADD_DATA_URL = "http://0.0.0.0:8000/api/sensor_data/add"
+USER_ID_API = "http://0.0.0.0:8000/api/userId"
+subscribed_topics = []
 
-# if BASE_TOPIC == "alli/ece140/sensors":
-#     print("Please enter a unique topic for your server")
-#     exit()
+async def get_user_id():
+    try:
+        response = requests.get(USER_ID_API)
+        if response.status_code == 200:
+            return response.json().get("userId")
+    except requests.RequestException as e:
+        print(f"Error fetching user ID:" {e})
+    return None
 
-async def fetch_topic(user_id):
+async def get_device_topics(user_id):
     devices = await get_topic_by_user(user_id)
     if devices:
         return [device["id"] for device in devices]
     return []
 
+# if BASE_TOPIC == "alli/ece140/sensors":
+#     print("Please enter a unique topic for your server")
+#     exit()
+
 def on_connect(client, userdata, flags, rc):
     """Callback for when the client connects to the broker."""
     if rc == 0:
         print("Successfully connected to MQTT broker")
-        client.subscribe(TOPIC)
-        print(f"Subscribed to {TOPIC}")
+
+        user_id = get_user_id()
+        if user_id:
+            topics = get_device_topics(user_id)
+            for topic in topics:
+                if topic not in subscribed_topics:
+                    TOPIC = f"{BASE_TOPIC}/{topic}"
+                    client.subscribe(TOPIC)
+                    subscribed_topics.append(TOPIC)
+                    print(f"Subscribed to {TOPIC}")
     else:
         print(f"Failed to connect with result code {rc}")
 
@@ -54,31 +74,27 @@ def on_message(client, userdata, msg):
         # if it is, print the payload
         # print(payload)
         topic_parts = msg.topic.split("/")
-        if len(topic_parts) == 2:
-            # print("Payload: " , payload)
+        # print("Payload: " , payload)
 
-            # EXTRACTION
-            # device_id = topic_parts[1]
-            device_id = "test1"
-
-            temperature = payload.get("temperature")
+        # EXTRACTION
+        # device_id = topic_parts[1]
+        device_id = topic_parts[-1]
+        temperature = payload.get("temperature")
+        
+        # CHECKER:
+        if temperature is not None:
+            if time.time() - prev_request_time >= 5 :
+                data = {
+                    "device_id": device_id,
+                    "value": temperature,
+                }
+                response = requests.post(API_ENDPOINT_URL, json=data)
+                if response.status_code == 200:
+                    print("SUCCESSFUL: Data sent", data)
+                else:
+                    print("FAILURE: Cannot send data", response.text)
             
-            # CHECKER:
-            if temperature is not None:
-                if time.time() - prev_request_time >= 5 :
-                    data = {
-                        "device_id": device_id,
-                        "value": temperature,
-                    }
-
-                    response = requests.post(API_ENDPOINT_URL, json=data)
-
-                    if response.status_code == 200:
-                        print("SUCCESSFUL: Data sent", data)
-                    else:
-                        print("FAILURE: Cannot send data", response.text)
-                
-                    prev_request_time = time.time()
+                prev_request_time = time.time()
                 
         
     except json.JSONDecodeError:

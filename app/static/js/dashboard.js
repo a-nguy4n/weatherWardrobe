@@ -271,3 +271,59 @@ function updateWeatherAnimation(weatherCondition) {
     }
  }
  
+
+ document.addEventListener("DOMContentLoaded", function() {
+    fetch(`/api/temperature?order-by=timestamp&limit=500`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(`Fetched data for temperature:`, data);
+            if(!data || data.length === 0) {
+                console.warn(`No data received for temperature`);
+                return;
+            }
+
+            let ctx = document.getElementById("temperatureChart").getContext("2d");
+            let labels = data.map(entry => entry.timestamp);
+            let dataVal = data.map(entry => entry.value);
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    
+                    labels: labels.slice(0, 500),
+                    datasets: [{
+                        label: `Temperature over time`,
+                        data: dataVal.slice(0, 500),
+                        borderColor: "red",
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        fill: false,
+                        tension: 0.3
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        zoom: {
+                            pan: { enabled: true, mode: "x"},
+                            zoom: { enabled: true, mode: "x"}
+                        }
+                    },
+
+                    scales: {
+                        x: {
+                            title: { display: true, text: "Timestamp" },
+                            ticks: { autoSkip: true, maxTicksLimit: 10}
+                        },
+                        y: {
+                            title: { display: true, text: "Value"},
+                            beginAtZero: true
+
+                        }
+                    }
+                }  
+            })
+        })
+        .catch(error => console.error(`Error fetching temperature: data:`, error));
+});
