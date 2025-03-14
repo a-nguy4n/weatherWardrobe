@@ -34,6 +34,7 @@ def get_db_connection(
             connection = mysql.connector.connect(
                 host=os.getenv("MYSQL_HOST"),
                 user=os.getenv("MYSQL_USER"),
+                port=int(os.getenv('MYSQL_PORT')),
                 password=os.getenv("MYSQL_PASSWORD"),
                 database=os.getenv("MYSQL_DATABASE"),
                 ssl_ca=os.getenv('MYSQL_SSL_CA'),  # Path to CA certificate file
