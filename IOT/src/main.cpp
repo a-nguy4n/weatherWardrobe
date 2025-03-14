@@ -11,7 +11,7 @@ ECE140_WIFI wifi;   // wifi object
 
 // WiFi credentials
 const char* ucsdUsername = UCSD_USERNAME;
-const char* ucsdPassword = UCSD_PASSWORD;
+const char* ucsdPassword = "pFhaz2/j$ADPbazee3:k";
 const char* wifiSsid = WIFI_SSID;
 const char* nonEnterpriseWifiPassword = "sAp3rs1nLH0+spOt";
 
@@ -37,10 +37,10 @@ void setup() {
 
     // Connecting to Wifi here:
     Serial.println("[Main] Connecting to Wifi...");
-    // wifi.connectToWPAEnterprise(wifiSsid, ucsdUsername, ucsdPassword);
+    wifi.connectToWPAEnterprise(wifiSsid, ucsdUsername, ucsdPassword);
     
     // *** not UCSD wifi:  ***
-    wifi.connectToWiFi(wifiSsid, nonEnterpriseWifiPassword);
+    // wifi.connectToWiFi(wifiSsid, nonEnterpriseWifiPassword);
 
     // To connect to the MQTT :
     Serial.println("Connecting to MQTT broker...");
