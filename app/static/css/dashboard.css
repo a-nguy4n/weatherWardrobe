@@ -95,10 +95,26 @@ body{
 
 #suggestCard {
   width: 60%;
-  height: 25vh;
+  height: 30vh;
   background-color: rgba(255, 255, 255, 0.937);
   border-radius: 15px;
   margin-left: 33%;
+}
+
+#ai_button{
+  font-family: "Roboto Mono";
+  color: white;
+  background: #1f79c8eb;
+  border-radius: 13px; 
+  border: none;
+  margin-left: 36%;
+  font-size: 1vw;
+}
+
+#aiInfo,
+#fetchSuggestion {
+  color: #487fbd;
+  font-size: 1.3vw;
 }
 
 h2{
@@ -379,8 +395,3 @@ h2{
   100% { transform: rotate(360deg); }
 }
 
-#aiInfo,
-#fetchSuggestion {
-  color: #487fbd;
-  font-size: 1.3vw;
-}
