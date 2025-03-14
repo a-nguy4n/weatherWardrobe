@@ -444,7 +444,8 @@ async def get_user(request: Request):
     if sessionId:
         user = await get_user_by_id(sessionId["user_id"])
         username = user["email"]
-    return JSONResponse(content={"username": username})
+        return JSONResponse(content={"username": username})
+    return HTTPException(status_code=404, detail="Not found")
 
 @app.get("/all-data")
 async def all_sensor_data():
