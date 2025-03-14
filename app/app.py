@@ -200,9 +200,12 @@ async def user_page(username: str, request: Request):
     # else:
     #     profile = read_html("./templates/dashboard.html")
     #     return HTMLResponse(content=profile.replace("{username}", username))
-    return templates.TemplateResponse("dashboard.html", {
+    user_data = {"firstName": getUser["firstName"], 
+                 "lastName": getUser["lastName"], 
+                 "email": getUser["email"]}
+    return templates.TemplateResponse("/dashboard.html", {
         "request": request, 
-        "username": username
+        "user_data": user_data
     })
     
 

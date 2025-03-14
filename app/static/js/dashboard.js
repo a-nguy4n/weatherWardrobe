@@ -1,16 +1,4 @@
-window.onload = function () {
-    // Get the username from the URL path
-    const path = window.location.pathname;
-    const username = path.split('/user/')[1];
 
-    // Update the welcome message
-    document.getElementById(
-      'dashTitle'
-    ).textContent = `${username}'s Dashboard`;
-    // const profileLink = document.getElementById('user-profile-link');
-    // profileLink.href = `/profile/${username}`;
-    // profileLink.textContent = `Go to ${username}'s Profile`;
-  };
 
   const city_form = document.getElementById("findCity");
 
