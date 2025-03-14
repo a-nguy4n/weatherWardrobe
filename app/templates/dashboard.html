@@ -3,11 +3,14 @@
   <head>
     <title>Dashboard Page</title>
     <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/navigation.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
-  <body>
-    
+  <body class="dashboard-page">
+
+    {% include "navigation.html" %}
+
     <h1 id="dashTitle"> {{ user_data.firstName }}'s Dashboard </h1>
 
     <div class="dashLayout">
@@ -39,8 +42,7 @@
         </div>
       </section>
     </div>
-
-
+    
   </body>
   <script src="/static/js/dashboard.js"></script>
 </html>
