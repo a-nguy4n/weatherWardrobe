@@ -10,6 +10,7 @@
     <div class="frontPage">
         <section class="linkBar">
             <a href="#aboutSection">About</a>
+            <a href="#" id="dashboard-link">Dashboard</a>
             <a href="/login">Login</a>
             <a href="/signup"> Sign Up</a>
         </section>
@@ -60,8 +61,20 @@
         </section>
     </div>
 
-
-
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function (){
+            fetch("/api/user/me") 
+                .then(response => response.json())
+                .then(data => {
+                    if (data.username){
+                        document.getElementById("dashboard-link").href = `/user/${data.username}`;
+                    } 
+                    else{
+                        console.error("User not logged in.");
+                    }
+                })
+                .catch(error => console.error("Error fetching user:", error));
+        });
+    </script>
 </body>
 </html>

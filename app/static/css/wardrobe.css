@@ -15,15 +15,16 @@ body{
 h1{
   font-family: "Roboto Mono";
   color: white;
-  margin-left: 15%;
+  margin-left: 13%;
   margin-top: 3%;
 }
 
-.wardrobeCard {
+.wardrobeCard{
   width: 80%;
   height: 80%;
   background-color: white;
   margin: auto;
+  margin-bottom: 5%;
 }
 
 button{

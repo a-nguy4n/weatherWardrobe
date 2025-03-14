@@ -197,9 +197,13 @@ async def user_page(username: str, request: Request):
     if getUser is None or getUser["email"] != username:
         return HTMLResponse(content=get_error_html(username), status_code=403)
     # TODO: 14. If all valid, show profile page
-    else:
-        profile = read_html("./templates/dashboard.html")
-        return HTMLResponse(content=profile.replace("{username}", username))
+    # else:
+    #     profile = read_html("./templates/dashboard.html")
+    #     return HTMLResponse(content=profile.replace("{username}", username))
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request, 
+        "username": username
+    })
     
 
 ###### PROFILE TO ADD/DELETE DEVICES #########

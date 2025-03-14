@@ -47,6 +47,7 @@ def on_message(client, userdata, msg):
     global prev_request_time
     try:
         # Parse JSON message
+        topic= msg.topic
         payload = json.loads(msg.payload.decode())
         current_time = datetime.now()
         
@@ -84,8 +85,6 @@ def on_message(client, userdata, msg):
     except json.JSONDecodeError:
         print(f"\nReceived non-JSON message on {msg.topic}:")
         print(f"Payload: {msg.payload.decode()}")
-
-
 
 
 def main():

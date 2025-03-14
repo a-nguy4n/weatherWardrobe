@@ -3,11 +3,14 @@
   <head>
     <title>Dashboard Page</title>
     <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/navigation.css">
   </head>
 
-  <body>
-    
-    <h1 id="dashTitle"> Dashboard </h1>
+  <body class="dashboard-page">
+
+    {% include "navigation.html" %}
+
+    <h1 id="dashTitle">{{ username }}'s Dashboard</h1>
 
     <div class="dashLayout">
       <section class="weatherForecast">
@@ -37,8 +40,7 @@
         </div>
       </section>
     </div>
-
-
+    
   </body>
   <script src="/static/js/dashboard.js"></script>
 </html>

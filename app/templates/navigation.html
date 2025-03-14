@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Navigation Dropdown Icon</title>
+    <link rel="stylesheet" href="/static/css/navigation.css">
+
+</head>
+<body>
+    <nav class="navigationContainer">
+        <div class="dropdownMenu">
+            <img src="/static/assets/navCloudIcon.png" alt="Cloud Menu" class="dropBtn">
+            <div class="dropdown-content">
+                <a href="#" id="profile-link">Profile</a>
+                <a href="#" id="dashboard-link">Dashboard</a>
+                <a href="#" id="wardrobe-link">My Wardrobe</a>
+                <a href="/#aboutSection"> About Us</a>
+                <a href="#" id="logout-link">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function (){
+            const dropBtn = document.querySelector(".dropBtn");
+            const dropdown = document.querySelector(".dropdown-content");
+        
+            dropBtn.addEventListener("click", function (event) {
+                dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+                event.stopPropagation(); 
+            });
+        
+            document.addEventListener("click", function (event) {
+                if (!dropBtn.contains(event.target) && !dropdown.contains(event.target)){
+                    dropdown.style.display = "none";
+                }
+            });
+    
+            fetch("/api/user/me") 
+                .then(response => response.json())
+                .then(data => {
+                    if (data.username){
+                        document.getElementById("profile-link").href = `/profile/${data.username}`;
+                        document.getElementById("dashboard-link").href = `/user/${data.username}`;
+                        document.getElementById("wardrobe-link").href = `/wardrobe/${data.username}`;
+                    } else {
+                        console.error("User not logged in.");
+                    }
+                })
+                .catch(error => console.error("Error fetching user:", error));
+    
+            document.getElementById("logout-link").addEventListener("click", function (event) {
+                event.preventDefault(); 
+    
+                fetch("/logout", {
+                    method: "POST",
+                    credentials: "include" 
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url; 
+                    } else {
+                        console.error("Logout failed.");
+                    }
+                })
+                .catch(error => console.error("Error during logout:", error));
+            });
+        });
+    </script>
+    
+</body>
+</html>
