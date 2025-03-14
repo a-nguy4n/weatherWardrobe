@@ -60,9 +60,14 @@ const city_form = document.getElementById("findCity");
   });
 
   const ai_button = document.getElementById("ai_button");
+  const loadingScreen = document.getElementById("loading");
+  const aiResponseElement = document.getElementById("aiInfo");
   
   ai_button.addEventListener("click", async (event) => {
     event.preventDefault();
+
+    loadingScreen.style.display = "block";
+    aiResponseElement.textContent = "";
 
     await fetchWardrobeItems();
     let searchQuery = await generateQuery();
@@ -84,13 +89,17 @@ const city_form = document.getElementById("findCity");
         const data = await response.json();
         console.log("AI Response:", data);
 
-        const aiResponseElement = document.getElementById("aiInfo");
         if(aiResponseElement) {
             aiResponseElement.textContent = data.result.response;
         }
     }
     catch (error) {
         console.error("Error fetching AI response:", error);
+        aiResponseElement.textContent = "Error fetching AI suggestion.";
+    }
+
+    finally {
+        loadingScreen.style.display = "none";
     }
 
   });
