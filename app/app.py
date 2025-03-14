@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request, Response, HTTPException, status, Form, Bod
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from datetime import datetime
 import requests
 import logging
 import os
@@ -187,7 +188,7 @@ async def user_page(username: str, request: Request):
     # TODO: 11. Get sessionId from cookies
     sessionId = request.cookies.get("sessionId")
     # TODO: 12. Check if sessionId exists and is valid
-    #   - if not, redirect to /login
+    #   - if not, redirect to /login 
     session = await get_session(sessionId)
     if not session:
         return RedirectResponse("/login")
@@ -198,8 +199,12 @@ async def user_page(username: str, request: Request):
         return HTMLResponse(content=get_error_html(username), status_code=403)
     # TODO: 14. If all valid, show profile page
     else:
-        profile = read_html("./templates/dashboard.html")
-        return HTMLResponse(content=profile.replace("{username}", username))
+        user_data = {"firstName": getUser["firstName"], 
+                 "lastName": getUser["lastName"], 
+                 "email": getUser["email"]}
+        return templates.TemplateResponse("dashboard.html", {"request": request, "user_data": user_data})
+        # profile = read_html("./templates/dashboard.html")
+        # return HTMLResponse(content=profile.replace("{username}", username))
     
 
 ###### PROFILE TO ADD/DELETE DEVICES #########
@@ -343,36 +348,59 @@ async def get_user_wardrobe_items(request: Request):
 
 
 ####### SENSOR DATA #######
-@app.get("/sensor_data/{username}", response_class=HTMLResponse)
-async def sensorData(username: str, request: Request):
-    sessionId = request.cookies.get("sessionId")
+@app.get("/sensor_data")
+async def sensorData():
+    try:
+        all_data = await get_all_data()
+        
+        if not all_data:
+            raise HTTPException(status_code=404, detail="No sensor data found")
 
-    session = await get_session(sessionId)
+        return all_data
+        # keys = ["id", "user_id", "device_id", "sensor_type", "value", "unit", "curr_time"]
+        # converted_data = [dict(zip(keys, row)) for row in all_data]
 
-    if not session:
-        return RedirectResponse("/login")
+        # for entry in converted_data:
+        #     if isinstance(entry["curr_time"], datetime):
+        #         entry["curr_time"] = entry["curr_time"].strftime('%Y-%m-%d %H:%M:%S')
+
+        # return converted_data
+
+    except Exception as e:
+        logging.error(f"Database error: {str(e)}")  # Logs the actual error
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+    # sessionId = request.cookies.get("sessionId")
+
+    # session = await get_session(sessionId)
+
+    # if not session:
+    #     return RedirectResponse("/login")
     
-    getUser = await get_user_by_id(session["user_id"])
-    if getUser is None or getUser["email"] != username:
-        return HTMLResponse(content=get_error_html(username), status_code=403)
-    return templates.TemplateResponse("/dashboard.html", {"request": request})
+    # getUser = await get_user_by_id(session["user_id"])
+    # if getUser is None or getUser["email"] != username:
+    #     return HTMLResponse(content=get_error_html(username), status_code=403)
+    # return templates.TemplateResponse("/dashboard.html", {"request": request})
+
 
 @app.post("/api/sensor_data/add")
-async def add_sensor_data(
-    request: Request,
-    device_id: str = Body(...),
+def add_sensor_data(
     value: float = Body(...)):
     
-    await add_user_sensor_data(device_id, value)
+    add_user_sensor_data(value)
     return JSONResponse(content={"message": "Data added successfully"}, status_code=201)
 
 @app.get("/api/userId")
 async def get_user(request: Request):
+    print(f"Session cookie: {request.cookies.get("sessionId")}")
     sessionId = await get_session(request.cookies.get("sessionId"))
+    print(f"Session: {sessionId}")
     if sessionId:
         user = await get_user_by_id(sessionId["user_id"])
+        print(f"User: {user}")
         userId = user["id"]
-    return JSONResponse(content={"userId": userId})
+        return JSONResponse(content={"userId": userId})
+    return JSONResponse(status_code=401, content={"error": "Invalid session"})
 
 ####### AI API #######
 @app.post("/api/ai/query")

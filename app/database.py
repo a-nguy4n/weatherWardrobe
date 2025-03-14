@@ -2,7 +2,6 @@ import os
 import time
 import logging
 import mysql.connector
-import pandas as pd
 
 from typing import Optional
 from dotenv import load_dotenv
@@ -515,7 +514,7 @@ async def get_user_sensor_data(user_id: int):
         cursor.close()
         connection.close()
 
-async def add_user_sensor_data(user_id: int, device_id: str, value: float):
+def add_user_sensor_data(value: float):
     connection = None
     cursor = None
 
@@ -523,7 +522,7 @@ async def add_user_sensor_data(user_id: int, device_id: str, value: float):
         connection = get_db_connection()
         cursor = connection.cursor()
         
-        cursor.execute("INSERT INTO sensorData (device_id, value) VALUES (%s, %s)", (device_id, value))
+        cursor.execute("INSERT INTO sensorData (value) VALUES (%s)", (value,))
         connection.commit()
     finally:
         cursor.close()

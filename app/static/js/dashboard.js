@@ -1,18 +1,4 @@
-window.onload = function () {
-    // Get the username from the URL path
-    const path = window.location.pathname;
-    const username = path.split('/user/')[1];
-
-    // Update the welcome message
-    document.getElementById(
-      'dashTitle'
-    ).textContent = `${username}'s Dashboard`;
-    // const profileLink = document.getElementById('user-profile-link');
-    // profileLink.href = `/profile/${username}`;
-    // profileLink.textContent = `Go to ${username}'s Profile`;
-  };
-
-  const city_form = document.getElementById("findCity");
+const city_form = document.getElementById("findCity");
 
   let weatherCity = "";
   let weatherCondition = "";
@@ -272,58 +258,132 @@ function updateWeatherAnimation(weatherCondition) {
  }
  
 
- document.addEventListener("DOMContentLoaded", function() {
-    fetch(`/api/temperature?order-by=timestamp&limit=500`)
-        .then(response => response.json())
-        .then(data => {
-            console.log(`Fetched data for temperature:`, data);
-            if(!data || data.length === 0) {
-                console.warn(`No data received for temperature`);
-                return;
-            }
+//  document.addEventListener("DOMContentLoaded", function() {
+//     fetch(`/sensor_data`)
+//         .then(response => response.json())
+//         .then(data => {
+//             console.log(`Fetched data for temperature:`, data);
+//             if(!data || data.length === 0) {
+//                 console.warn(`No data received for temperature`);
+//                 return;
+//             }
 
-            let ctx = document.getElementById("temperatureChart").getContext("2d");
-            let labels = data.map(entry => entry.timestamp);
-            let dataVal = data.map(entry => entry.value);
-            new Chart(ctx, {
-                type: "line",
-                data: {
+//             let ctx = document.getElementById("temperatureChart").getContext("2d");
+//             let labels = data.map(entry => entry.curr_time);
+//             let dataVal = data.map(entry => entry.value);
+//             let temperatureChart = new Chart(ctx, {
+//                 type: "line",
+//                 data: {
                     
-                    labels: labels.slice(0, 500),
-                    datasets: [{
-                        label: `Temperature over time`,
-                        data: dataVal.slice(0, 500),
-                        borderColor: "red",
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        fill: false,
-                        tension: 0.3
-                    }]
+//                     labels: labels.slice(0, 20),
+//                     datasets: [{
+//                         label: `Temperature over time`,
+//                         data: dataVal.slice(0, 20),
+//                         borderColor: "red",
+//                         borderWidth: 2,
+//                         pointRadius: 0,
+//                         fill: false,
+//                         tension: 0.3
+//                     }]
+//                 },
+
+//                 options: {
+//                     responsive: true,
+//                     maintainAspectRatio: true,
+//                     plugins: {
+//                         zoom: {
+//                             pan: { enabled: true, mode: "x"},
+//                             zoom: { enabled: true, mode: "x"}
+//                         }
+//                     },
+
+//                     scales: {
+//                         x: {
+//                             title: { display: true, text: "Timestamp" },
+//                             ticks: { autoSkip: true, maxTicksLimit: 10}
+//                         },
+//                         y: {
+//                             title: { display: true, text: "Value"},
+//                             beginAtZero: true
+
+//                         }
+//                     }
+//                 }  
+//             })
+//         })
+//         .catch(error => console.error(`Error fetching temperature: data:`, error));
+// });
+
+document.addEventListener("DOMContentLoaded", function() {
+    let ctx = document.getElementById("temperatureChart").getContext("2d");
+    
+    // Initialize the Chart
+    let temperatureChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: [], // Empty labels initially
+            datasets: [{
+                label: `Temperature over time`,
+                data: [],
+                borderColor: "red",
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false,
+                tension: 0.3
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                zoom: {
+                    pan: { enabled: true, mode: "x"},
+                    zoom: { enabled: true, mode: "x"}
+                }
+            },
+
+            scales: {
+                x: {
+                    title: { display: true, text: "Timestamp" },
+                    ticks: { autoSkip: true, maxTicksLimit: 10}
                 },
+                y: {
+                    title: { display: true, text: "Value"},
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        zoom: {
-                            pan: { enabled: true, mode: "x"},
-                            zoom: { enabled: true, mode: "x"}
-                        }
-                    },
+    // Function to fetch new sensor data and update the chart
+    function updateChart() {
+        fetch(`/sensor_data`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(`Fetched data for temperature:`, data);
+                if (!data || data.length === 0) {
+                    console.warn(`No data received for temperature`);
+                    return;
+                }
 
-                    scales: {
-                        x: {
-                            title: { display: true, text: "Timestamp" },
-                            ticks: { autoSkip: true, maxTicksLimit: 10}
-                        },
-                        y: {
-                            title: { display: true, text: "Value"},
-                            beginAtZero: true
+                // Extract timestamps and values
+                let labels = data.map(entry => entry.curr_time);
+                let dataVal = data.map(entry => entry.value);
 
-                        }
-                    }
-                }  
+                // Update chart data
+                temperatureChart.data.labels = labels.slice(-20);  // Keep only last 20 points
+                temperatureChart.data.datasets[0].data = dataVal.slice(-20);
+
+                // Refresh the chart
+                temperatureChart.update();
             })
-        })
-        .catch(error => console.error(`Error fetching temperature: data:`, error));
+            .catch(error => console.error(`Error fetching temperature data:`, error));
+    }
+
+    // Fetch data every 2 seconds
+    setInterval(updateChart, 2000);
+
+    // Initial data fetch
+    updateChart();
 });
